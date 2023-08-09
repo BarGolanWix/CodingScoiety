@@ -32,6 +32,7 @@ function CustomToolbar({
               onClick={handleHomeClick}
               href="/home"
               size="large"
+              sx={{ letterSpacing: 1 }}
               startIcon={<HomeIcon />}
             >
               Home
@@ -39,6 +40,7 @@ function CustomToolbar({
             <Button
               href="/add-new-post"
               size="large"
+              sx={{ letterSpacing: 1 }}
               startIcon={<AddCircleIcon />}
               data-testid="addNewPostBtn"
             >
@@ -47,6 +49,7 @@ function CustomToolbar({
             <Button
               href="/my-recommended-posts"
               size="large"
+              sx={{ letterSpacing: 1 }}
               startIcon={<RecommendIcon />}
               data-testid="myRecommendedPostsBtn"
             >
@@ -55,6 +58,7 @@ function CustomToolbar({
             <Button
               href="/search-friends"
               size="large"
+              sx={{ letterSpacing: 1 }}
               startIcon={<SearchIcon />}
               data-testid="mySearchFriendsBtn"
             >
@@ -66,7 +70,7 @@ function CustomToolbar({
         )}
         <Typography
           variant="h5"
-          letterSpacing={1.5}
+          letterSpacing={1}
           component="div"
           sx={{ fontFamily: "monospace", flexGrow: 1 }}
         >
@@ -74,8 +78,6 @@ function CustomToolbar({
         </Typography>
         <Button
           className={
-            window.location.href !==
-              "http://localhost:3000/my-recommended-posts" &&
             window.location.href !== "http://localhost:3000/add-new-post" &&
             window.location.href !== "http://localhost:3000/search-friends" &&
             window.location.href !== "http://localhost:3000/"
@@ -83,6 +85,7 @@ function CustomToolbar({
               : "visibilityHidden"
           }
           size="large"
+          sx={{ letterSpacing: 1 }}
           startIcon={<FilterAltIcon />}
           onClick={(e) => handlePopularityClick(e)}
           data-testid="popularityBtn"

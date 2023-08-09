@@ -16,6 +16,7 @@ function Home({
   userId,
   baseURL,
   filterPostsByTag,
+  admitted,
 }) {
   const [searchParams, setSearchParams] = useSearchParams();
   const [anchorEl, setAnchorEl] = useState(null);
@@ -31,6 +32,7 @@ function Home({
   }, [selectedPopularityQuery, setSearchParams]);
 
   ///////////////////////////////////// handle tag on post /////////////////////////////////////
+
   const handleAddTagClick = (event, selectedPostId) => {
     setAnchorEl(event.currentTarget);
     setSelectedPostId(selectedPostId);
@@ -38,7 +40,7 @@ function Home({
 
   const handleMenuClose = (selectedOption) => {
     setAnchorEl(null);
-    addTagToPostTagsList(selectedOption);
+    selectedOption && addTagToPostTagsList(selectedOption);
   };
 
   const addTagToPostTagsList = (selectedOption) => {
@@ -79,6 +81,7 @@ function Home({
                 postId={post.id}
                 postTitle={post.title}
                 postContent={post.content}
+                postWriter={post.writer}
                 isAddTagBtn={true}
                 handleAddTagClick={handleAddTagClick}
                 handleTagClick={handleTagClick}
@@ -98,12 +101,14 @@ function Home({
           </Typography>
         )}
       </List>
-      <TagsCloud
-        tagsList={tagsList}
-        handleAddNewTag={handleAddNewTag}
-        selectedTagId={selectedTagId}
-        handleTagClick={handleTagClick}
-      />
+      {admitted === "admin" && (
+        <TagsCloud
+          tagsList={tagsList}
+          handleAddNewTag={handleAddNewTag}
+          selectedTagId={selectedTagId}
+          handleTagClick={handleTagClick}
+        />
+      )}
       <FloatingMenu
         menuOptions={tagsList}
         anchorElement={anchorEl}

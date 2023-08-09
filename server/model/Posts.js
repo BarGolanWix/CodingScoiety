@@ -1,6 +1,7 @@
 const Posts = [
   {
     id: "11",
+    writer: "Jhon",
     title: "Example Title 1",
     content: "Example content 1",
     userId: "11",
@@ -9,6 +10,7 @@ const Posts = [
   },
   {
     id: "12",
+    writer: "Lisa",
     title: "Example Title 2",
     content: "Example content 2",
     userId: "11",
@@ -17,6 +19,7 @@ const Posts = [
   },
   {
     id: "13",
+    writer: "Jonathan",
     title: "Example Title 3",
     content:
       "Example content that has more then 300 characters, Example content that has more then 300 characters, Example content that has more then 300 characters, Example content that has more then 300 characters, Example content that has more then 300 characters, Example content that has more then 300 characters",

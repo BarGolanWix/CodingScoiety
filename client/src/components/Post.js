@@ -31,6 +31,7 @@ function Post({
   postLikes,
   postDislikes,
   baseURL,
+  postWriter,
 }) {
   const getTagsByPostId = (postID) => {
     const tagsArr = [];
@@ -125,7 +126,18 @@ function Post({
         <ListItemButton disableGutters>
           <CardContent>
             <Typography
-              variant="h5"
+              variant="h6"
+              sx={{ fontWeight: "bold" }}
+              color="primary"
+              gutterBottom
+              data-testid={`postTitle-${postWriter}`}
+            >
+              {postWriter}
+            </Typography>
+            <Typography
+              variant="body1"
+              sx={{ fontWeight: "bold" }}
+              color="secondary"
               gutterBottom
               data-testid={`postTitle-${postId}`}
             >

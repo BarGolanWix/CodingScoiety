@@ -26,6 +26,7 @@ function MyRecommendedPosts({
                 postId={post.id}
                 postTitle={post.title}
                 postContent={post.content}
+                postWriter={post.writer}
                 isTagDisabled={true}
                 isAddTagBtn={false}
                 Tags={Tags}

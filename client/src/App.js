@@ -240,22 +240,25 @@ function App() {
             path="/add-new-post"
             element={<AddNewPost handleAddPost={addPost} tagsList={tagsList} />}
           />
-          <Route
-            path="/home"
-            element={
-              <Home
-                Posts={filteredPosts}
-                Tags={tags}
-                tagsList={tagsList}
-                handleAddNewTag={addNewTag}
-                selectedTagId={selectedTagId}
-                selectedPopularityQuery={selectedPopularityQuery}
-                userId={userId}
-                baseURL={baseURL}
-                filterPostsByTag={filterPostsByTag}
-              />
-            }
-          />
+          {admitted !== "unauthorized" && (
+            <Route
+              path="/home"
+              element={
+                <Home
+                  Posts={filteredPosts}
+                  Tags={tags}
+                  tagsList={tagsList}
+                  handleAddNewTag={addNewTag}
+                  selectedTagId={selectedTagId}
+                  selectedPopularityQuery={selectedPopularityQuery}
+                  userId={userId}
+                  baseURL={baseURL}
+                  filterPostsByTag={filterPostsByTag}
+                  admitted={admitted}
+                />
+              }
+            />
+          )}
           <Route
             path="/search-friends"
             element={<SearchFriends baseURL={baseURL} userId={userId} />}

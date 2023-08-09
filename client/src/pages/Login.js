@@ -21,7 +21,7 @@ function Login({ setAdmitted, baseURL }) {
   const [account, setAccount] = useState({ userName: "", password: "" });
 
   useEffect(() => {
-    setAdmitted(false);
+    setAdmitted("");
   }, []);
 
   const handleLogIn = async () => {
@@ -40,8 +40,8 @@ function Login({ setAdmitted, baseURL }) {
           },
         }
       );
-      if (response) {
-        setAdmitted(true);
+      if (response.authorization !== "unauthorized") {
+        setAdmitted(response.data.authorization);
         navigate("/home");
       } else {
         alert("User name or password are not correct");

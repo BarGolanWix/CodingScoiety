@@ -36,7 +36,8 @@ app.get("/user", cors(corsOptions), (req, res) => {
 
 app.post("/credentialsCheck", cors(corsOptions), (req, res) => {
   const { userName, password } = req.body.account;
-  res.status(200).send({ success: true });
+  authorization = "authorizedUser";
+  res.status(200).send({ success: true, authorization: authorization });
 });
 
 ///////////////////////////////////// posts /////////////////////////////////////

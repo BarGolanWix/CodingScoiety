@@ -64,7 +64,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 15px;
-  padding-top: 10px;
+  padding-top: 20px;
 }
 
 .MuiCardActions-root > .MuiButtonBase-root.MuiFab-root.Mui-disabled.Badge {

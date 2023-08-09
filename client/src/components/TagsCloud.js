@@ -10,10 +10,10 @@ import {
   InputLabel,
   OutlinedInput,
   Button,
-} from '@mui/material';
-import Tag from '../components/Tag';
-import AddTagButton from './AddTagButton';
-import { useState } from 'react';
+} from "@mui/material";
+import Tag from "../components/Tag";
+import AddTagButton from "./AddTagButton";
+import { useState } from "react";
 
 function TagsCloud({
   tagsList,
@@ -22,7 +22,7 @@ function TagsCloud({
   handleTagClick,
 }) {
   const [isNewTag, setIsNewTag] = useState(false);
-  const [newTag, setNewTag] = useState('');
+  const [newTag, setNewTag] = useState("");
 
   const handleNewTagClick = () => {
     setIsNewTag(true);
@@ -31,25 +31,30 @@ function TagsCloud({
   const handleSubmit = () => {
     handleAddNewTag(newTag);
     setIsNewTag(false);
-    setNewTag('');
+    setNewTag("");
   };
 
   return (
     <Container
-      maxWidth='xs'
-      className='tagsListContainer'
-      data-testid='tagList'
+      maxWidth="xs"
+      className="tagsListContainer"
+      data-testid="tagList"
     >
-      <Typography variant='h5' data-testid='tagList-title'>
+      <Typography
+        variant="h6"
+        sx={{ fontWeight: "bold" }}
+        color="primary"
+        data-testid="tagList-title"
+      >
         Tags List
       </Typography>
-      <Divider />
-      <Box className='tagsList'>
+      <Divider sx={{ padding: "3px" }} />
+      <Box className="tagsList">
         {tagsList.map((tagName, index) => (
           <Tag
             key={`home-${index}-${tagName}`}
             tagName={tagName}
-            postId=''
+            postId=""
             handleOnClick={handleTagClick}
             selectedTagId={selectedTagId}
             isDisabled={false}
@@ -61,36 +66,36 @@ function TagsCloud({
         />
         {isNewTag && (
           <Card
-            component='form'
-            sx={{ minWidth: '100%' }}
-            data-testid='tagList-newTag-card'
+            component="form"
+            sx={{ minWidth: "100%" }}
+            data-testid="tagList-newTag-card"
           >
-            <CardContent className='formFields'>
-              <FormControl sx={{ minWidth: '90%' }}>
+            <CardContent className="formFields">
+              <FormControl sx={{ minWidth: "90%" }}>
                 <InputLabel
-                  htmlFor='new-tag-field'
-                  data-testid='tagList-newTag-inputLabel'
+                  htmlFor="new-tag-field"
+                  data-testid="tagList-newTag-inputLabel"
                 >
                   Tag
                 </InputLabel>
                 <OutlinedInput
-                  id='tagList-newTagInput'
-                  label='Tag'
+                  id="tagList-newTagInput"
+                  label="Tag"
                   fullWidth
                   value={newTag}
                   onChange={(event) => {
                     setNewTag(event.target.value);
                   }}
-                  data-testid='tagList-newTag-input'
+                  data-testid="tagList-newTag-input"
                 />
               </FormControl>
             </CardContent>
             <CardActions>
               <Button
-                variant='contained'
-                size='large'
+                variant="contained"
+                size="large"
                 onClick={handleSubmit}
-                data-testid='tagList-newTag-submitBtn'
+                data-testid="tagList-newTag-submitBtn"
               >
                 submit
               </Button>
