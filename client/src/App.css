@@ -114,6 +114,6 @@
   text-decoration: underline;
 }
 
-.visibilityHidden {
-  visibility: hidden;
+button.visibilityHidden {
+  display: none;
 }
