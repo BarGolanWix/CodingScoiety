@@ -5,9 +5,10 @@ import { useState, useEffect, useCallback } from "react";
 import { List, Typography } from "@mui/material";
 import UserSearchBox from "../components/UserSearchBox";
 
-function SearchFriends({ baseURL, userId }) {
+function SearchFriends({ baseURL }) {
   const [users, setUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
+  const [followedUsers, setFollowedUsers] = useState([]);
 
   useEffect(() => {
     getUsers();
@@ -17,8 +18,9 @@ function SearchFriends({ baseURL, userId }) {
     axios
       .get(`${baseURL}/users`)
       .then((response) => {
-        setUsers([...response.data["Users"]]);
-        setFilteredUsers([...response.data["Users"]]);
+        setUsers([...response.data["usersWithoutCurrentUser"]]);
+        setFilteredUsers([...response.data["usersWithoutCurrentUser"]]);
+        setFollowedUsers([...response.data["followedUsers"]]);
       })
       .catch((error) => {
         console.log(error);
@@ -35,18 +37,19 @@ function SearchFriends({ baseURL, userId }) {
         `${baseURL}/users/searchFriends/${keyword}`
       );
       setFilteredUsers([...response.data["filteredUsers"]]);
+      setFollowedUsers([...response.data["followedUsers"]]);
     } catch (error) {
       console.log(error);
     }
   };
 
-  const followClickHandler = async (userIdToFollow) => {
+  const followClickHandler = async (userNameToFollow) => {
     try {
       const response = await axios.put(
         `${baseURL}/users/follow`,
         {
           user: {
-            userIdToFollow,
+            userNameToFollow,
           },
         },
         {
@@ -78,6 +81,9 @@ function SearchFriends({ baseURL, userId }) {
                 userName={user.userName}
                 userImage={user.profileImage}
                 onFollowClick={followClickHandler}
+                isFollowed={
+                  followedUsers.includes(user.userName) ? true : false
+                }
               />
             );
           })}

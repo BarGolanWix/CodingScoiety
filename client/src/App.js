@@ -24,7 +24,7 @@ function App() {
   const popularityOptions = [1, 2, 4, 10, 20];
 
   const [userId, setUserId] = useState("");
-  const [admitted, setAdmitted] = useState(true);
+  const [admitted, setAdmitted] = useState("");
 
   const [selectedPopularityQuery, setSelectedPopularityQuery] = useState("");
   const [selectedTagQuery, setSelectedTagQuery] = useState("");
@@ -57,9 +57,15 @@ function App() {
     setAlertType(type);
   };
 
+  useEffect(() => {
+    setAdmitted(localStorage.getItem("admitted"));
+  }, []);
+
   ///////////////////////////////////// data req /////////////////////////////////////
+
   axios.defaults.withCredentials = true;
-  ///////////////////// get req /////////////////////
+
+  ///////////////////////////////////// get req /////////////////////////////////////
 
   // sets a userId cookie
   const getUser = useCallback(() => {
@@ -78,7 +84,7 @@ function App() {
       .get(`${baseURL}/posts`)
       .then((response) => {
         setAllPosts([...response.data["Posts"]]);
-        setFilteredPosts([...response.data["Posts"]]);
+        setFilteredPosts([...response.data["filteredPosts"]]);
       })
       .catch((error) => {
         handleAlert(error.message, true, "error");

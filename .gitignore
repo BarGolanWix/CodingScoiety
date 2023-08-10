@@ -8,3 +8,6 @@ client/node_modules
 
 client/node_modules/.cache/default-development/0.pack
 
+.DS_Store
+
+.vscode/launch.json

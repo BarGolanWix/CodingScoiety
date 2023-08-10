@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   CardContent,
   ListItemButton,
@@ -10,12 +10,12 @@ import {
 import Image from "mui-image";
 import { useState } from "react";
 
-function UserCard({ userId, userName, userImage, onFollowClick }) {
-  const [follow, setFollow] = useState(false);
+function UserCard({ userId, userName, userImage, onFollowClick, isFollowed }) {
+  const [follow, setFollow] = useState(isFollowed);
 
   const followClickHandler = () => {
     setFollow((prev) => !prev);
-    onFollowClick(userId);
+    onFollowClick(userName);
   };
 
   return (

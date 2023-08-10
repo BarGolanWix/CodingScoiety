@@ -3,11 +3,13 @@ const { v4: uuidv4 } = require("uuid");
 const cookieParser = require("cookie-parser");
 var bodyParser = require("body-parser");
 const cors = require("cors");
+const fs = require("fs");
 
 const { baseUrl } = require("../constants");
 const { Posts } = require("./model/Posts");
 const { Tags } = require("./model/Tags");
 const { Users } = require("./model/Users");
+const { Credentials } = require("./model/Credentials");
 
 const app = express();
 const port = 3080;
@@ -23,27 +25,75 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
-///////////////////////////////////// user /////////////////////////////////////
+///////////////////////////////////// user authorization /////////////////////////////////////
 
 app.get("/", cors(corsOptions), (req, res) => {
-  res.send("Welcome to your Wix Enter exam!");
-});
-
-app.get("/user", cors(corsOptions), (req, res) => {
-  const userId = req.cookies?.userId || uuidv4();
-  res.cookie("userId", userId).send({ id: userId });
+  res.send("Welcome!");
 });
 
 app.post("/credentialsCheck", cors(corsOptions), (req, res) => {
-  const { userName, password } = req.body.account;
-  authorization = "authorizedUser";
-  res.status(200).send({ success: true, authorization: authorization });
+  const { userName, password, rememberMe } = req.body.account;
+
+  const user = Credentials.find(
+    (user) => user.userName === userName && user.password === password
+  );
+
+  if (user) {
+    const newAccessToken = generateAccessToken(rememberMe);
+    user.accessToken = newAccessToken;
+    res.cookie("userId", user.userId);
+    res.cookie("accessToken", newAccessToken);
+    res.send({ success: true, authorization: user.authorization });
+  } else {
+    res.status(400).send({
+      success: false,
+      authorization: "unauthorized",
+    });
+  }
+});
+
+app.use((req, res, next) => {
+  let currentAccessToken = req.cookies?.accessToken;
+  const currentUserId = req.cookies?.userId;
+  const userInDisc = Credentials.find((user) => user.userId === currentUserId);
+  if (userInDisc) {
+    const currentTime = new Date();
+    const expirationTime = new Date(
+      JSON.parse(userInDisc.accessToken).expirationDate
+    );
+    const userInDiscAccessToken = JSON.parse(userInDisc.accessToken);
+    currentAccessToken = JSON.parse(currentAccessToken);
+    if (
+      userInDiscAccessToken.secret === currentAccessToken.secret &&
+      currentTime < expirationTime
+    ) {
+      next();
+    } else {
+      res.status(401).send({ success: false, message: "invalid access token" });
+    }
+  } else {
+    res.status(401).send({ success: false, message: "invalid access token" });
+  }
+});
+
+app.get("/user", cors(corsOptions), (req, res) => {
+  const userId = req.cookies?.userId;
+  res.send({ id: userId });
 });
 
 ///////////////////////////////////// posts /////////////////////////////////////
+
 app.get("/posts", cors(corsOptions), (req, res) => {
+  const currentUser = findUserWithCookie(req.cookies?.userId);
   let { popularity, tag } = req.query;
   let filteredPosts = JSON.parse(JSON.stringify(Posts));
+
+  filteredPosts = filteredPosts.filter(
+    (post) =>
+      currentUser.following.includes(post.writer) ||
+      post.writer === currentUser.userName
+  );
+
   if (popularity) {
     popularity = Number(popularity);
     filteredPosts = filteredPosts.filter(
@@ -61,6 +111,7 @@ app.post("/posts", cors(corsOptions), (req, res) => {
   userId = req.cookies?.userId;
   const newPost = {
     id: id,
+    writer: userId,
     title: title,
     content: content,
     userId: userId,
@@ -114,16 +165,6 @@ app.post("/posts/likesDislikes", cors(corsOptions), (req, res) => {
 
   res.status(200).send({ success: true, newPost: postToUpdate });
 });
-
-const findMissmatch = (originalList, newList) => {
-  newItem = -1;
-  newList.forEach((value) => {
-    if (!originalList.includes(value)) {
-      newItem = value;
-    }
-  });
-  return newItem;
-};
 
 app.get("/posts/recommended", cors(corsOptions), (req, res) => {
   const userId = req.cookies?.userId;
@@ -208,31 +249,39 @@ app.post("/tags/tagName/:tagName", cors(corsOptions), (req, res) => {
 ///////////////////////////////////// users and followers /////////////////////////////////////
 
 app.get("/users", cors(corsOptions), (req, res) => {
-  res.status(200).send({ Users });
+  const userId = req.cookies?.userId;
+  const usersWithoutCurrentUser = Users.filter(
+    (user) => user.userId !== userId
+  );
+  const followedUsers = findUserWithCookie(userId).following;
+  res.status(200).send({ usersWithoutCurrentUser, followedUsers });
 });
 
-app.get("/users/searchFriends/:userName", cors(corsOptions), (req, res) => {
-  const { userName } = req.params;
-  const filteredUsers = Users.filter((user) =>
-    user.userName.includes(userName)
+app.get("/users/searchFriends/:keyword", cors(corsOptions), (req, res) => {
+  const userId = req.cookies?.userId;
+  const { keyword } = req.params;
+  const filteredUsers = Users.filter(
+    (user) => user.userName.includes(keyword) && user.userId !== userId
   );
-  res.status(200).send({ filteredUsers });
+  const followedUsers = findUserWithCookie(req.cookies?.userId).following;
+
+  res.status(200).send({ filteredUsers, followedUsers });
 });
 
 app.put("/users/follow", cors(corsOptions), (req, res) => {
   const userId = req.cookies?.userId;
-  const { userIdToFollow } = req.body.user;
-  const currentUser = Users.find((user) => user.userId === userId);
+  const currentUser = findUserWithCookie(userId);
+  const { userNameToFollow } = req.body.user;
   if (currentUser) {
     const index = currentUser.following.findIndex(
-      (friendId) => friendId === userIdToFollow
+      (friend) => friend === userNameToFollow
     );
     if (index === -1) {
-      currentUser.following.push(userIdToFollow);
+      currentUser.following.push(userNameToFollow);
     } else {
       currentUser.following.splice(index, 1);
     }
-    res.status(200).send({ success: true });
+    res.status(200).send({ success: true, following: currentUser.following });
   } else {
     res.status(400).send({ success: false, message: "user not found" });
   }
@@ -241,3 +290,70 @@ app.put("/users/follow", cors(corsOptions), (req, res) => {
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
+
+///////////////////////////////////// write to disc /////////////////////////////////////
+
+function writeDataToFile(filename, data) {
+  fs.writeFile(filename, data, (err) => {
+    if (err) {
+      console.error(`Error writing to ${filename}:`, err);
+    } else {
+      console.log(`Data written to ${filename}`);
+    }
+  });
+}
+
+setInterval(() => {
+  writeDataToFile(
+    "./model/Posts.js",
+    `const Posts = ${JSON.stringify(Posts)}; module.exports = { Posts }`
+  );
+  writeDataToFile(
+    "./model/Tags.js",
+    `const Tags = ${JSON.stringify(Tags)}; module.exports = { Tags }`
+  );
+  writeDataToFile(
+    "./model/Users.js",
+    `const Users = ${JSON.stringify(Users)}; module.exports = { Users }`
+  );
+  writeDataToFile(
+    "./model/Credentials.js",
+    `const Credentials = ${JSON.stringify(
+      Credentials
+    )}; module.exports = { Credentials }`
+  );
+}, 30000);
+
+///////////////////////////////////// helper functions /////////////////////////////////////
+
+function findUserWithCookie(userId) {
+  return Users.find((user) => user.userId === userId);
+}
+
+function generateAccessToken(rememberMe) {
+  const expirationDate = new Date();
+  if (rememberMe) {
+    expirationDate.setHours(expirationDate.getHours() + 1000);
+  } else {
+    expirationDate.setHours(expirationDate.getHours() + 1000);
+  }
+
+  const accessToken = uuidv4();
+  let newAccessToken = {
+    secret: accessToken,
+    expirationDate: expirationDate,
+  };
+  newAccessToken = JSON.stringify(newAccessToken);
+
+  return newAccessToken;
+}
+
+const findMissmatch = (originalList, newList) => {
+  newItem = -1;
+  newList.forEach((value) => {
+    if (!originalList.includes(value)) {
+      newItem = value;
+    }
+  });
+  return newItem;
+};

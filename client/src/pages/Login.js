@@ -10,6 +10,8 @@ import {
   TextField,
   Button,
   Select,
+  FormControlLabel,
+  Checkbox,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -19,12 +21,17 @@ import axios from "axios";
 function Login({ setAdmitted, baseURL }) {
   const navigate = useNavigate();
   const [account, setAccount] = useState({ userName: "", password: "" });
+  const [rememberMe, setRememberMe] = useState(false);
 
   useEffect(() => {
     setAdmitted("");
   }, []);
 
-  const handleLogIn = async () => {
+  const handleRememberMeChange = (event) => {
+    setRememberMe(event.target.checked);
+  };
+
+  const handleLogin = async () => {
     if (account.userName === "" || account.password === "") {
       return alert("All required fields must not be empty!");
     }
@@ -33,6 +40,7 @@ function Login({ setAdmitted, baseURL }) {
         `${baseURL}/credentialsCheck`,
         {
           account,
+          rememberMe,
         },
         {
           headers: {
@@ -42,12 +50,12 @@ function Login({ setAdmitted, baseURL }) {
       );
       if (response.authorization !== "unauthorized") {
         setAdmitted(response.data.authorization);
+        localStorage.setItem("admitted", response.data.authorization);
         navigate("/home");
-      } else {
-        alert("User name or password are not correct");
       }
     } catch (error) {
       console.log(error);
+      alert("User name or password are not correct");
     }
   };
 
@@ -103,13 +111,22 @@ function Login({ setAdmitted, baseURL }) {
               data-testid="addNewPost-postTitle"
             />
           </FormControl>
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={rememberMe}
+                onChange={handleRememberMeChange}
+              />
+            }
+            label="Remember me"
+          />
         </CardContent>
         <CardActions>
           <Button
             variant="contained"
             size="large"
             data-testid="addNewPost-submitBtn"
-            onClick={handleLogIn}
+            onClick={handleLogin}
           >
             Log In
           </Button>
@@ -117,7 +134,7 @@ function Login({ setAdmitted, baseURL }) {
             variant="outlined"
             size="large"
             data-testid="addNewPost-submitBtn"
-            onClick={handleLogIn}
+            onClick={handleLogin}
           >
             Sign Up
           </Button>
