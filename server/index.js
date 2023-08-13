@@ -1,5 +1,5 @@
 const express = require("express");
-const { v4: uuidv4 } = require("uuid");
+const { v4: uuidv4, v4 } = require("uuid");
 const cookieParser = require("cookie-parser");
 var bodyParser = require("body-parser");
 const cors = require("cors");
@@ -31,13 +31,64 @@ app.get("/", cors(corsOptions), (req, res) => {
   res.send("Welcome!");
 });
 
+app.post("/signUp", cors(corsOptions), (req, res) => {
+  const { userName, password, profileImage } = req.body.account;
+  const newUserId = uuidv4();
+  const newAccessToken = generateAccessToken(false);
+
+  let validUserName = checkUserNameValidity(userName);
+  if (!validUserName) {
+    return res
+      .status(401)
+      .send({ error: true, message: "User Name already exists" });
+  }
+
+  let newProfileImage = profileImage;
+  if (!profileImage) {
+    newProfileImage = "default-profile-image.png";
+  }
+
+  const newUser = {
+    userId: newUserId,
+    userName: userName,
+    profileImage: `/images/${newProfileImage}`,
+    posts: [],
+    following: [],
+  };
+  const newCredentials = {
+    userName: userName,
+    password: password,
+    userId: newUserId,
+    authorization: "authorizedUser",
+    accessToken: newAccessToken,
+  };
+
+  // Updating local arrays
+  Users.push(newUser);
+  Credentials.push(newCredentials);
+
+  //Updating data on disc
+  writeDataToFile(
+    "./model/Users.js",
+    `const Users = ${JSON.stringify(Users)}; module.exports = { Users }`
+  );
+  writeDataToFile(
+    "./model/Credentials.js",
+    `const Credentials = ${JSON.stringify(
+      Credentials
+    )}; module.exports = { Credentials }`
+  );
+
+  res.cookie("userId", newUser.userId);
+  res.cookie("accessToken", newAccessToken);
+  res.send({ success: true, authorization: newUser.authorization });
+});
+
 app.post("/credentialsCheck", cors(corsOptions), (req, res) => {
   const { userName, password, rememberMe } = req.body.account;
-
   const user = Credentials.find(
     (user) => user.userName === userName && user.password === password
   );
-
   if (user) {
     const newAccessToken = generateAccessToken(rememberMe);
     user.accessToken = newAccessToken;
@@ -58,11 +109,8 @@ app.use((req, res, next) => {
   const userInDisc = Credentials.find((user) => user.userId === currentUserId);
   if (userInDisc) {
     const currentTime = new Date();
-    const expirationTime = new Date(
-      JSON.parse(userInDisc.accessToken).expirationDate
-    );
-    const userInDiscAccessToken = JSON.parse(userInDisc.accessToken);
-    currentAccessToken = JSON.parse(currentAccessToken);
+    const expirationTime = new Date(userInDisc.accessToken.expirationDate);
+    const userInDiscAccessToken = userInDisc.accessToken;
     if (
       userInDiscAccessToken.secret === currentAccessToken.secret &&
       currentTime < expirationTime
@@ -76,9 +124,22 @@ app.use((req, res, next) => {
   }
 });
 
-app.get("/user", cors(corsOptions), (req, res) => {
+app.get("/autoCredentialsCheck", cors(corsOptions), (req, res) => {
+  const userId = req.cookies.userId;
+  const user = Credentials.find((user) => userId === user.userId);
+  res.status(200).send({ success: true, authorization: user.authorization });
+});
+
+app.get("/getUserId", cors(corsOptions), (req, res) => {
   const userId = req.cookies?.userId;
   res.send({ id: userId });
+});
+
+app.put("/logout", cors(corsOptions), (req, res) => {
+  const userId = req.cookies?.userId;
+  const currentUser = Credentials.find((user) => userId === user.userId);
+  currentUser.accessToken.expirationDate = new Date();
+  res.status(200).send({ succes: true, credentials: Credentials });
 });
 
 ///////////////////////////////////// posts /////////////////////////////////////
@@ -90,8 +151,8 @@ app.get("/posts", cors(corsOptions), (req, res) => {
 
   filteredPosts = filteredPosts.filter(
     (post) =>
-      currentUser.following.includes(post.writer) ||
-      post.writer === currentUser.userName
+      currentUser.following.includes(post.writer[1]) ||
+      post.writer[0] === currentUser.userId
   );
 
   if (popularity) {
@@ -111,7 +172,7 @@ app.post("/posts", cors(corsOptions), (req, res) => {
   userId = req.cookies?.userId;
   const newPost = {
     id: id,
-    writer: userId,
+    writer: [userId, findUserWithCookie(userId).userName],
     title: title,
     content: content,
     userId: userId,
@@ -136,7 +197,9 @@ app.post("/posts/tags", cors(corsOptions), (req, res) => {
 });
 
 app.post("/posts/likesDislikes", cors(corsOptions), (req, res) => {
-  let { postId, postLikes, postDislikes, didUserLikePost } = req.body;
+  let { postId, postLikes, postDislikes, didUserLikePost, didUserDislikePost } =
+    req.body;
+  const userId = req.cookies?.userId;
   postLikes = !postLikes ? [] : postLikes;
   postDislikes = !postDislikes ? [] : postDislikes;
 
@@ -144,27 +207,75 @@ app.post("/posts/likesDislikes", cors(corsOptions), (req, res) => {
   let newLike = findMissmatch(postToUpdate.likes, postLikes);
   let newDislike = findMissmatch(postToUpdate.dislikes, postDislikes);
 
-  if (newLike !== -1 && newDislike !== -1) {
-    console.log("both missmatch");
-  } else {
-    if (newLike !== -1) {
-      postToUpdate.likes.push(newLike);
-      const index = postToUpdate.dislikes.indexOf(newLike);
-      if (index !== -1) {
-        postToUpdate.dislikes.splice(index, 1);
-      }
-    }
-    if (newDislike !== -1) {
-      postToUpdate.dislikes.push(newDislike);
-      const index = postToUpdate.likes.indexOf(newDislike);
-      if (index !== -1) {
-        postToUpdate.likes.splice(index, 1);
-      }
-    }
+  let unLike = findMissmatch(postLikes, postToUpdate.likes);
+  let unDislike = findMissmatch(postDislikes, postToUpdate.dislikes);
+
+  if (newLike !== -1) {
+    postToUpdate.likes.push(newLike);
+    const index = postToUpdate.dislikes.indexOf(newLike);
+    index !== -1 && postToUpdate.dislikes.splice(index, 1);
+  } else if (newDislike !== -1) {
+    postToUpdate.dislikes.push(newDislike);
+    const index = postToUpdate.likes.indexOf(newDislike);
+    index !== -1 && postToUpdate.likes.splice(index, 1);
+  } else if (unLike !== -1) {
+    const index = postToUpdate.likes.indexOf(unLike);
+    postToUpdate.likes.splice(index, 1);
+  } else if (unDislike !== -1) {
+    const index = postToUpdate.dislikes.indexOf(unDislike);
+    postToUpdate.dislikes.splice(index, 1);
   }
 
   res.status(200).send({ success: true, newPost: postToUpdate });
 });
+
+// app.post("/posts/likesDislikes", cors(corsOptions), (req, res) => {
+//   let { postId, postLikes, postDislikes, didUserLikePost, didUserDislikePost } =
+//     req.body;
+//   const userId = req.cookies?.userId;
+//   postLikes = !postLikes ? [] : postLikes;
+//   postDislikes = !postDislikes ? [] : postDislikes;
+
+//   const postToUpdate = Posts.find((post) => post.id === postId);
+//   let newLike = findMissmatch(postToUpdate.likes, postLikes);
+//   let newDislike = findMissmatch(postToUpdate.dislikes, postDislikes);
+
+//   if (newLike !== -1 && newDislike !== -1) {
+//     console.log("both missmatch");
+//   } else {
+//     if (newLike !== -1) {
+//       postToUpdate.likes.push(newLike);
+//       const index = postToUpdate.dislikes.indexOf(newLike);
+//       if (index !== -1) {
+//         postToUpdate.dislikes.splice(index, 1);
+//       }
+//     }
+//     if (newDislike !== -1) {
+//       postToUpdate.dislikes.push(newDislike);
+//       const index = postToUpdate.likes.indexOf(newDislike);
+//       if (index !== -1) {
+//         postToUpdate.likes.splice(index, 1);
+//       }
+//     }
+//   }
+
+//   const findUserIdIndexInLikes = postToUpdate.likes.indexOf(userId);
+//   const findUserIdIndexInDislikes = postToUpdate.dislikes.indexOf(userId);
+
+//   if (didUserLikePost) {
+//     findUserIdIndexInLikes === -1 && postToUpdate.likes.push(userId);
+//     findUserIdIndexInLikes !== -1 &&
+//       postToUpdate.likes.splice(findUserIdIndexInLikes, 1);
+//   }
+
+//   if (didUserDislikePost) {
+//     findUserIdIndexInDislikes === -1 && postToUpdate.dislikes.push(userId);
+//     findUserIdIndexInDislikes !== -1 &&
+//       postToUpdate.dislikes.splice(findUserIdIndexInDislikes, 1);
+//   }
+
+//   res.status(200).send({ success: true, newPost: postToUpdate });
+// });
 
 app.get("/posts/recommended", cors(corsOptions), (req, res) => {
   const userId = req.cookies?.userId;
@@ -294,13 +405,13 @@ app.listen(port, () => {
 ///////////////////////////////////// write to disc /////////////////////////////////////
 
 function writeDataToFile(filename, data) {
-  fs.writeFile(filename, data, (err) => {
-    if (err) {
-      console.error(`Error writing to ${filename}:`, err);
-    } else {
-      console.log(`Data written to ${filename}`);
-    }
-  });
+  // fs.writeFile(filename, data, (err) => {
+  //   if (err) {
+  //     console.error(`Error writing to ${filename}:`, err);
+  //   } else {
+  //     console.log(`Data written to ${filename}`);
+  //   }
+  // });
 }
 
 setInterval(() => {
@@ -333,9 +444,9 @@ function findUserWithCookie(userId) {
 function generateAccessToken(rememberMe) {
   const expirationDate = new Date();
   if (rememberMe) {
-    expirationDate.setHours(expirationDate.getHours() + 1000);
+    expirationDate.setHours(expirationDate.getHours() + 240);
   } else {
-    expirationDate.setHours(expirationDate.getHours() + 1000);
+    expirationDate.setMinutes(expirationDate.getMinutes() + 30);
   }
 
   const accessToken = uuidv4();
@@ -343,7 +454,6 @@ function generateAccessToken(rememberMe) {
     secret: accessToken,
     expirationDate: expirationDate,
   };
-  newAccessToken = JSON.stringify(newAccessToken);
 
   return newAccessToken;
 }
@@ -356,4 +466,13 @@ const findMissmatch = (originalList, newList) => {
     }
   });
   return newItem;
+};
+
+const checkUserNameValidity = (userName) => {
+  for (const user of Users) {
+    if (user.userName === userName) {
+      return false;
+    }
+  }
+  return true;
 };

@@ -2,14 +2,10 @@ import {
   Card,
   CardContent,
   CardActions,
-  Typography,
   FormControl,
   InputLabel,
   OutlinedInput,
-  MenuItem,
-  TextField,
   Button,
-  Select,
   FormControlLabel,
   Checkbox,
 } from "@mui/material";
@@ -24,8 +20,25 @@ function Login({ setAdmitted, baseURL }) {
   const [rememberMe, setRememberMe] = useState(false);
 
   useEffect(() => {
-    setAdmitted("");
+    autoCheckUserCred();
   }, []);
+
+  const autoCheckUserCred = async () => {
+    try {
+      const response = await axios.get(`${baseURL}/autoCredentialsCheck`);
+      const authorization = response.data.authorization;
+      if (authorization === "admin" || authorization === "authorizedUser") {
+        setAdmitted(authorization);
+        localStorage.setItem("admitted", authorization);
+        navigate("/home");
+      } else {
+        setAdmitted("");
+        localStorage.setItem("admitted", "");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const handleRememberMeChange = (event) => {
     setRememberMe(event.target.checked);
@@ -134,7 +147,7 @@ function Login({ setAdmitted, baseURL }) {
             variant="outlined"
             size="large"
             data-testid="addNewPost-submitBtn"
-            onClick={handleLogin}
+            onClick={() => navigate("/signUp")}
           >
             Sign Up
           </Button>

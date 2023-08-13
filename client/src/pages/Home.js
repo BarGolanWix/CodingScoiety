@@ -63,7 +63,6 @@ function Home({
       console.log(error);
     }
   };
-
   ///////////////////////////////////// handle filter tag /////////////////////////////////////
   const handleTagClick = (tagName, tagId) => {
     filterPostsByTag(tagName, tagId);

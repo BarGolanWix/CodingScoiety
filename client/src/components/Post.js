@@ -48,6 +48,7 @@ function Post({
   const [didUserLikePost, setDidUserLikePost] = useState(false);
   const [didUserDislikePost, setDidUserDislikePost] = useState(false);
   const [readMore, setReadMore] = useState(false);
+  // const userId = localStorage.getItem("userId");
 
   useEffect(() => {
     setDidUserLikePost(
@@ -66,8 +67,18 @@ function Post({
     );
   });
 
+  // useEffect(() => {
+  //   sendLikesDislikesToServer();
+  // }, [didUserDislikePost, didUserLikePost]);
+
   const handleDislikeClick = () => {
-    if (didUserDislikePost) return;
+    if (didUserDislikePost) {
+      const index = postDislikes.indexOf(userId);
+      index !== -1 && postDislikes.splice(index, 1);
+      setDidUserDislikePost(false);
+      sendLikesDislikesToServer();
+      return;
+    }
 
     postDislikes.push(userId);
     setDidUserDislikePost(true);
@@ -81,7 +92,13 @@ function Post({
   };
 
   const handleLikeClick = () => {
-    if (didUserLikePost) return;
+    if (didUserLikePost) {
+      const index = postLikes.indexOf(userId);
+      index !== -1 && postLikes.splice(index, 1);
+      setDidUserLikePost(false);
+      sendLikesDislikesToServer();
+      return;
+    }
 
     postLikes.push(userId);
     setDidUserLikePost(true);
@@ -103,6 +120,7 @@ function Post({
           postLikes: postLikes,
           postDislikes: postDislikes,
           didUserLikePost: didUserLikePost,
+          didUserDislikePost: didUserDislikePost,
         },
         { headers: { "content-type": "application/x-www-form-urlencoded" } }
       );
@@ -132,7 +150,7 @@ function Post({
               gutterBottom
               data-testid={`postTitle-${postWriter}`}
             >
-              {postWriter}
+              {postWriter[1]}
             </Typography>
             <Typography
               variant="body1"

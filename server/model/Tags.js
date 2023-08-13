@@ -1,1 +1,2 @@
-const Tags = {"Server":[],"Frontend":[],"Security":[],"Work":[]}; module.exports = { Tags }
+const Tags = { Server: [], Frontend: [], Security: [], Work: [] };
+module.exports = { Tags };

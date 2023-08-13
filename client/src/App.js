@@ -8,6 +8,7 @@ import MyRecommendedPosts from "./pages/MyRecommendedPosts";
 import Login from "./pages/Login";
 import SearchFriends from "./pages/SearchFriends";
 import CustomToolbar from "./components/CustomToolbar.js";
+import SignUp from "./pages/SignUp";
 
 import {
   Typography,
@@ -70,14 +71,15 @@ function App() {
   // sets a userId cookie
   const getUser = useCallback(() => {
     axios
-      .get(`${baseURL}/user`)
+      .get(`${baseURL}/getUserId`)
       .then((response) => {
         setUserId(response.data.id);
+        localStorage.setItem("userId", response.data.id);
       })
       .catch((error) => {
         handleAlert(error.message, true, "error");
       });
-  }, []);
+  }, [admitted]);
 
   const getPosts = useCallback(() => {
     axios
@@ -138,6 +140,7 @@ function App() {
   };
 
   ///////////////////// post req /////////////////////
+
   const addPost = (id, title, content, selectedTag) => {
     axios
       .post(
@@ -194,6 +197,7 @@ function App() {
   };
 
   ///////////////////////////////////// filters /////////////////////////////////////
+
   const filterPostsByPopularity = (minLikeNum = 1) => {
     setSelectedPopularityQuery(`${minLikeNum}`);
     getFilteredPosts(minLikeNum, selectedTagQuery);
@@ -216,6 +220,7 @@ function App() {
         popularityOptions={popularityOptions}
         anchorEl={anchorEl}
         handlePopularityMenuClose={handlePopularityMenuClose}
+        baseURL={baseURL}
       />
       {showAlert && (
         <Snackbar>
@@ -229,6 +234,10 @@ function App() {
           <Route
             path="/"
             element={<Login setAdmitted={setAdmitted} baseURL={baseURL} />}
+          />
+          <Route
+            path="/signUP"
+            element={<SignUp setAdmitted={setAdmitted} baseURL={baseURL} />}
           />
           <Route
             path="/my-recommended-posts"

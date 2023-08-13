@@ -14,6 +14,7 @@ import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import RecommendIcon from "@mui/icons-material/Recommend";
 import HomeIcon from "@mui/icons-material/Home";
 import SearchIcon from "@mui/icons-material/Search";
+import axios from "axios";
 
 function CustomToolbar({
   admitted,
@@ -22,7 +23,16 @@ function CustomToolbar({
   popularityOptions,
   anchorEl,
   handlePopularityMenuClose,
+  baseURL,
 }) {
+  const handleSignOutClick = async () => {
+    try {
+      const response = await axios.put(`${baseURL}/logout`);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <AppBar position="sticky" color="inherit">
       <Toolbar>
@@ -80,7 +90,10 @@ function CustomToolbar({
           className={
             window.location.href !== "http://localhost:3000/add-new-post" &&
             window.location.href !== "http://localhost:3000/search-friends" &&
-            window.location.href !== "http://localhost:3000/"
+            window.location.href !== "http://localhost:3000/" &&
+            window.location.href !==
+              "http://localhost:3000/my-recommended-posts" &&
+            window.location.href !== "http://localhost:3000/signUp"
               ? ""
               : "visibilityHidden"
           }
@@ -91,6 +104,24 @@ function CustomToolbar({
           data-testid="popularityBtn"
         >
           Filter by Popularity
+        </Button>
+        <Button
+          className={
+            window.location.href !== "http://localhost:3000/" &&
+            window.location.href !== "http://localhost:3000/signUp"
+              ? ""
+              : "visibilityHidden"
+          }
+          size="large"
+          color="inherit"
+          sx={{
+            letterSpacing: 1,
+          }}
+          href="/"
+          onClick={handleSignOutClick}
+          data-testid="signOutBtn"
+        >
+          Sign Out
         </Button>
         <FloatingMenu
           menuOptions={popularityOptions}
