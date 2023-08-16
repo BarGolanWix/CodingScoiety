@@ -2,30 +2,38 @@ import React from "react";
 import UserCard from "../components/UserCard";
 import axios from "axios";
 import { useState, useEffect, useCallback } from "react";
-import { List, Typography } from "@mui/material";
+import { List, Typography, Button, ButtonGroup } from "@mui/material";
 import UserSearchBox from "../components/UserSearchBox";
 
 function SearchFriends({ baseURL }) {
+  const usersQantum = 8;
   const [users, setUsers] = useState([]);
+  const [usersRange, setUsersRange] = useState({ base: 0, limit: usersQantum });
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [followedUsers, setFollowedUsers] = useState([]);
 
   useEffect(() => {
     getUsers();
-  }, []);
+  }, [usersRange]);
 
-  const getUsers = useCallback(() => {
+  const getUsers = () => {
     axios
-      .get(`${baseURL}/users`)
+      .get(`${baseURL}/users`, { params: { usersRange } })
       .then((response) => {
         setUsers([...response.data["usersWithoutCurrentUser"]]);
         setFilteredUsers([...response.data["usersWithoutCurrentUser"]]);
+        // const newUsers = response.data["usersWithoutCurrentUser"];
+        // setUsers((prevFilteredUsers) => [...prevFilteredUsers, ...newUsers]);
+        // setFilteredUsers((prevFilteredUsers) => [
+        //   ...prevFilteredUsers,
+        //   ...newUsers,
+        // ]);
         setFollowedUsers([...response.data["followedUsers"]]);
       })
       .catch((error) => {
         console.log(error);
       });
-  }, []);
+  };
 
   const getFilteredUsers = async (keyword) => {
     if (keyword === "") {
@@ -63,14 +71,73 @@ function SearchFriends({ baseURL }) {
     }
   };
 
+  const handleNextClick = () => {
+    const newBase = usersRange.limit;
+    const newLimit = usersRange.limit + usersQantum;
+    console.log(usersRange);
+    setUsersRange({ base: newBase, limit: newLimit });
+  };
+
+  const handlePrevClick = () => {
+    let newBase = usersRange.base - usersQantum;
+    newBase < 0 ? (newBase = 0) : (newBase = newBase);
+    const newLimit = newBase + usersQantum;
+    console.log(usersRange);
+    setUsersRange({ base: newBase, limit: newLimit });
+  };
+
   return (
     <>
       {" "}
-      <UserSearchBox
-        className="searchBox"
-        baseURL={baseURL}
-        getFilteredUsers={getFilteredUsers}
-      />
+      <div className="seachFriends-SearchBox-ButtonGroup">
+        <UserSearchBox
+          className="searchBox"
+          baseURL={baseURL}
+          getFilteredUsers={getFilteredUsers}
+        />
+        <ButtonGroup sx={{ margin: "auto 50px" }} disableElevation>
+          {usersRange.base === 0 ? (
+            <Button
+              size="large"
+              sx={{ letterSpacing: 1 }}
+              variant="outlined"
+              onClick={handlePrevClick}
+              disabled
+            >
+              Prev
+            </Button>
+          ) : (
+            <Button
+              size="large"
+              sx={{ letterSpacing: 1 }}
+              variant="outlined"
+              onClick={handlePrevClick}
+            >
+              Prev
+            </Button>
+          )}
+          {users.length === 0 ? (
+            <Button
+              size="large"
+              sx={{ letterSpacing: 1 }}
+              variant="outlined"
+              onClick={handleNextClick}
+              disabled
+            >
+              Next
+            </Button>
+          ) : (
+            <Button
+              size="large"
+              sx={{ letterSpacing: 1 }}
+              variant="outlined"
+              onClick={handleNextClick}
+            >
+              Next
+            </Button>
+          )}
+        </ButtonGroup>
+      </div>
       <List className="usersContainer">
         {filteredUsers.length !== 0 &&
           filteredUsers.map((user) => {
@@ -88,8 +155,14 @@ function SearchFriends({ baseURL }) {
             );
           })}
         {users.length === 0 && (
-          <Typography variant="h5" component="div" data-testid="emptyPostList">
-            No search results
+          <Typography
+            variant="h5"
+            component="div"
+            fontFamily="monospace"
+            data-testid="emptyPostList"
+            padding="30px"
+          >
+            No search results . . .
           </Typography>
         )}
       </List>

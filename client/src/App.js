@@ -9,6 +9,7 @@ import Login from "./pages/Login";
 import SearchFriends from "./pages/SearchFriends";
 import CustomToolbar from "./components/CustomToolbar.js";
 import SignUp from "./pages/SignUp";
+import LoggedIn from "./pages/LoggedIn";
 
 import {
   Typography,
@@ -278,6 +279,7 @@ function App() {
             path="/search-friends"
             element={<SearchFriends baseURL={baseURL} userId={userId} />}
           />
+          <Route path="/logged-in" element={<LoggedIn baseURL={baseURL} />} />
         </Routes>
       </Router>
     </div>

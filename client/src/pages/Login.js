@@ -62,8 +62,9 @@ function Login({ setAdmitted, baseURL }) {
         }
       );
       if (response.authorization !== "unauthorized") {
-        setAdmitted(response.data.authorization);
-        localStorage.setItem("admitted", response.data.authorization);
+        let authorization = response.data.authorization + `-${new Date()}`;
+        setAdmitted(authorization);
+        localStorage.setItem("admitted", authorization);
         navigate("/home");
       }
     } catch (error) {
@@ -80,7 +81,7 @@ function Login({ setAdmitted, baseURL }) {
 
   return (
     <div className="container">
-      <Card component="form" className="form" data-testid="addNewPost-card">
+      <Card component="form" className="form" data-testid="login-card">
         <CardContent className="formFields">
           <FormControl sx={{ minWidth: "100%" }}>
             <InputLabel
@@ -101,6 +102,7 @@ function Login({ setAdmitted, baseURL }) {
                 changeAccountDetails(event);
               }}
               data-testid="addNewPost-postTitle"
+              autoComplete="off"
             />
           </FormControl>
           <FormControl sx={{ minWidth: "100%" }}>
@@ -112,6 +114,7 @@ function Login({ setAdmitted, baseURL }) {
               Password
             </InputLabel>
             <OutlinedInput
+              type="password"
               error={false}
               id="login-userName"
               label="UserName"
@@ -122,6 +125,7 @@ function Login({ setAdmitted, baseURL }) {
                 changeAccountDetails(event);
               }}
               data-testid="addNewPost-postTitle"
+              autoComplete="new-password"
             />
           </FormControl>
           <FormControlLabel

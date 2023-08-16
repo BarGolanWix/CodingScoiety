@@ -101,6 +101,7 @@ function SignUp({ setAdmitted, baseURL }) {
                 changeAccountDetails(event);
               }}
               data-testid="addNewPost-postTitle"
+              autoComplete="off"
             />
           </FormControl>
           <FormControl sx={{ minWidth: "100%" }}>
@@ -112,6 +113,7 @@ function SignUp({ setAdmitted, baseURL }) {
               Password
             </InputLabel>
             <OutlinedInput
+              // type="password"
               error={false}
               id="signUp-password"
               label="Password"
@@ -122,6 +124,7 @@ function SignUp({ setAdmitted, baseURL }) {
                 changeAccountDetails(event);
               }}
               data-testid="addNewPost-postTitle"
+              autoComplete="new-password"
             />
           </FormControl>
           <FormControl sx={{ minWidth: "100%" }}>
@@ -133,6 +136,7 @@ function SignUp({ setAdmitted, baseURL }) {
               Confirm Password
             </InputLabel>
             <OutlinedInput
+              // type="password"
               error={false}
               id="signUp-ConfirmPassword"
               label="Confirm Password"
@@ -143,6 +147,7 @@ function SignUp({ setAdmitted, baseURL }) {
                 changeAccountDetails(event);
               }}
               data-testid="addNewPost-postTitle"
+              autoComplete="new-password"
             />
           </FormControl>
           <FormControl sx={{ minWidth: "100%" }}>

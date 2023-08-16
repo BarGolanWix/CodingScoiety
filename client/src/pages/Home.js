@@ -23,6 +23,7 @@ function Home({
   const [selectedPostId, setSelectedPostId] = useState("");
 
   ///////////////////////////////////// handle query param /////////////////////////////////////
+
   searchParams.get("popularity");
 
   useEffect(() => {
@@ -63,9 +64,36 @@ function Home({
       console.log(error);
     }
   };
+
   ///////////////////////////////////// handle filter tag /////////////////////////////////////
+
   const handleTagClick = (tagName, tagId) => {
     filterPostsByTag(tagName, tagId);
+  };
+
+  ///////////////////////////////////// handle delete post /////////////////////////////////////
+
+  const handleDeletePostClick = async (postId) => {
+    try {
+      const response = await axios.put(
+        `${baseURL}/deletePost`,
+        {
+          postId,
+        },
+        {
+          headers: {
+            "content-type": "application/x-www-form-urlencoded",
+          },
+        }
+      );
+      const postToDelete = Posts.find((post) => postId === post.id);
+      const index = Posts.indexOf(postToDelete);
+      index !== -1 && Posts.splice(index, 1);
+      index === -1 && console.log("postId not found");
+      setSelectedPostId(-1);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   ///////////////////////////////////// render components /////////////////////////////////////
@@ -82,6 +110,8 @@ function Home({
                 postContent={post.content}
                 postWriter={post.writer}
                 isAddTagBtn={true}
+                isDeleteBtn={false}
+                handleDeletePostClick={handleDeletePostClick}
                 handleAddTagClick={handleAddTagClick}
                 handleTagClick={handleTagClick}
                 selectedTagId={selectedTagId}
@@ -100,7 +130,7 @@ function Home({
           </Typography>
         )}
       </List>
-      {admitted === "admin" && (
+      {admitted.includes("admin") && (
         <TagsCloud
           tagsList={tagsList}
           handleAddNewTag={handleAddNewTag}

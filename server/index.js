@@ -43,45 +43,60 @@ app.post("/signUp", cors(corsOptions), (req, res) => {
       .send({ error: true, message: "User Name already exists" });
   }
 
-  let newProfileImage = profileImage;
-  if (!profileImage) {
-    newProfileImage = "default-profile-image.png";
+  let PasswordValidation = checkPasswordValidity(password);
+  if (!PasswordValidation.isValid) {
+    return res
+      .status(401)
+      .send({ error: true, message: PasswordValidation.message });
   }
 
-  const newUser = {
-    userId: newUserId,
-    userName: userName,
-    profileImage: `/images/${newProfileImage}`,
-    posts: [],
-    following: [],
-  };
-  const newCredentials = {
-    userName: userName,
-    password: password,
-    userId: newUserId,
-    authorization: "authorizedUser",
-    accessToken: newAccessToken,
-  };
+  let newProfileImage = profileImage;
+  let filePath = `/images/${newProfileImage}`;
 
-  // Updating local arrays
-  Users.push(newUser);
-  Credentials.push(newCredentials);
+  if (!profileImage) {
+    filePath = "/images/default-profile-image.png";
+  }
 
-  //Updating data on disc
-  writeDataToFile(
-    "./model/Users.js",
-    `const Users = ${JSON.stringify(Users)}; module.exports = { Users }`
-  );
-  writeDataToFile(
-    "./model/Credentials.js",
-    `const Credentials = ${JSON.stringify(
-      Credentials
-    )}; module.exports = { Credentials }`
-  );
+  fs.access(filePath, fs.constants.F_OK, (error) => {
+    if (error) {
+      filePath = "/images/default-profile-image.png";
+    }
 
-  res.cookie("userId", newUser.userId);
-  res.cookie("accessToken", newAccessToken);
-  res.send({ success: true, authorization: newUser.authorization });
+    const newUser = {
+      userId: newUserId,
+      userName: userName,
+      profileImage: filePath,
+      posts: [],
+      following: [],
+    };
+    const newCredentials = {
+      userName: userName,
+      password: password,
+      userId: newUserId,
+      authorization: "authorizedUser",
+      accessToken: newAccessToken,
+    };
+
+    // Updating local arrays
+    Users.push(newUser);
+    Credentials.push(newCredentials);
+
+    //Updating data on disc
+    writeDataToFile(
+      "./model/Users.js",
+      `const Users = ${JSON.stringify(Users)}; module.exports = { Users }`
+    );
+    writeDataToFile(
+      "./model/Credentials.js",
+      `const Credentials = ${JSON.stringify(
+        Credentials
+      )}; module.exports = { Credentials }`
+    );
+
+    res.cookie("userId", newUser.userId);
+    res.cookie("accessToken", newAccessToken);
+    res.send({ success: true, authorization: newUser.authorization });
+  });
 });
 
 app.post("/credentialsCheck", cors(corsOptions), (req, res) => {
@@ -188,6 +203,23 @@ app.post("/posts", cors(corsOptions), (req, res) => {
   res.status(200).send({ success: true });
 });
 
+app.put("/deletePost", cors(corsOptions), (req, res) => {
+  const { postId } = req.body;
+  const postToDelete = Posts.find((post) => postId === post.id);
+  const index = Posts.indexOf(postToDelete);
+  if (index !== -1) {
+    Posts.splice(index, 1);
+    return res
+      .status(200)
+      .send({ success: true, message: `post with ID ${postId} was deleted` });
+  } else {
+    res.status(403).send({
+      success: false,
+      message: `post with ID ${postId} was not found`,
+    });
+  }
+});
+
 app.post("/posts/tags", cors(corsOptions), (req, res) => {
   const { option, postId } = req.query;
   Tags[option].push(postId);
@@ -228,54 +260,6 @@ app.post("/posts/likesDislikes", cors(corsOptions), (req, res) => {
 
   res.status(200).send({ success: true, newPost: postToUpdate });
 });
-
-// app.post("/posts/likesDislikes", cors(corsOptions), (req, res) => {
-//   let { postId, postLikes, postDislikes, didUserLikePost, didUserDislikePost } =
-//     req.body;
-//   const userId = req.cookies?.userId;
-//   postLikes = !postLikes ? [] : postLikes;
-//   postDislikes = !postDislikes ? [] : postDislikes;
-
-//   const postToUpdate = Posts.find((post) => post.id === postId);
-//   let newLike = findMissmatch(postToUpdate.likes, postLikes);
-//   let newDislike = findMissmatch(postToUpdate.dislikes, postDislikes);
-
-//   if (newLike !== -1 && newDislike !== -1) {
-//     console.log("both missmatch");
-//   } else {
-//     if (newLike !== -1) {
-//       postToUpdate.likes.push(newLike);
-//       const index = postToUpdate.dislikes.indexOf(newLike);
-//       if (index !== -1) {
-//         postToUpdate.dislikes.splice(index, 1);
-//       }
-//     }
-//     if (newDislike !== -1) {
-//       postToUpdate.dislikes.push(newDislike);
-//       const index = postToUpdate.likes.indexOf(newDislike);
-//       if (index !== -1) {
-//         postToUpdate.likes.splice(index, 1);
-//       }
-//     }
-//   }
-
-//   const findUserIdIndexInLikes = postToUpdate.likes.indexOf(userId);
-//   const findUserIdIndexInDislikes = postToUpdate.dislikes.indexOf(userId);
-
-//   if (didUserLikePost) {
-//     findUserIdIndexInLikes === -1 && postToUpdate.likes.push(userId);
-//     findUserIdIndexInLikes !== -1 &&
-//       postToUpdate.likes.splice(findUserIdIndexInLikes, 1);
-//   }
-
-//   if (didUserDislikePost) {
-//     findUserIdIndexInDislikes === -1 && postToUpdate.dislikes.push(userId);
-//     findUserIdIndexInDislikes !== -1 &&
-//       postToUpdate.dislikes.splice(findUserIdIndexInDislikes, 1);
-//   }
-
-//   res.status(200).send({ success: true, newPost: postToUpdate });
-// });
 
 app.get("/posts/recommended", cors(corsOptions), (req, res) => {
   const userId = req.cookies?.userId;
@@ -359,11 +343,26 @@ app.post("/tags/tagName/:tagName", cors(corsOptions), (req, res) => {
 
 ///////////////////////////////////// users and followers /////////////////////////////////////
 
+// let lastCall = new Date();
+
 app.get("/users", cors(corsOptions), (req, res) => {
   const userId = req.cookies?.userId;
-  const usersWithoutCurrentUser = Users.filter(
-    (user) => user.userId !== userId
-  );
+  const usersRange = req.query.usersRange;
+  const base = usersRange.base;
+  const limit = usersRange.limit;
+
+  let usersWithoutCurrentUser = Users.filter((user) => user.userId !== userId);
+  usersWithoutCurrentUser = usersWithoutCurrentUser.slice(base, limit);
+
+  // patch on the double calls
+  // const timeDiff = new Date().getTime() - lastCall.getTime();
+  // console.log(timeDiff);
+  // if (timeDiff < 500) {
+  //   usersWithoutCurrentUser = [];
+  // } else {
+  //   lastCall = new Date();
+  // }
+
   const followedUsers = findUserWithCookie(userId).following;
   res.status(200).send({ usersWithoutCurrentUser, followedUsers });
 });
@@ -372,7 +371,7 @@ app.get("/users/searchFriends/:keyword", cors(corsOptions), (req, res) => {
   const userId = req.cookies?.userId;
   const { keyword } = req.params;
   const filteredUsers = Users.filter(
-    (user) => user.userName.includes(keyword) && user.userId !== userId
+    (user) => user.userName.startsWith(keyword) && user.userId !== userId
   );
   const followedUsers = findUserWithCookie(req.cookies?.userId).following;
 
@@ -475,4 +474,29 @@ const checkUserNameValidity = (userName) => {
     }
   }
   return true;
+};
+
+const checkPasswordValidity = (password) => {
+  let isValid = true;
+  let errorMessage = "";
+  const minLength = 8;
+  const hasUppercase = /[A-Z]/.test(password);
+  const hasLowercase = /[a-z]/.test(password);
+  const hasDigits = /[0-9]/.test(password);
+
+  if (password.length < minLength) {
+    isValid = false;
+    errorMessage = `Password must be of length at least ${minLength}`;
+  } else if (!hasUppercase) {
+    isValid = false;
+    errorMessage = "Password must contain at least one uppercase character";
+  } else if (!hasLowercase) {
+    isValid = false;
+    errorMessage = "Password must contain at least one lowercase character";
+  } else if (!hasDigits) {
+    isValid = false;
+    errorMessage = "Password must contain at least one digit";
+  }
+
+  return { isValid: isValid, message: errorMessage };
 };

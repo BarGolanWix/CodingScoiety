@@ -13,9 +13,11 @@ import ThumbDownAltIcon from "@mui/icons-material/ThumbDownAlt";
 import ThumbUpOffAltIcon from "@mui/icons-material/ThumbUpOffAlt";
 import ThumbUpAltIcon from "@mui/icons-material/ThumbUpAlt";
 import AddTagButton from "./AddTagButton";
+
 import Tag from "./Tag";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import DeleteButton from "./DeleteButton";
 
 function Post({
   postId,
@@ -32,6 +34,8 @@ function Post({
   postDislikes,
   baseURL,
   postWriter,
+  isDeleteBtn,
+  handleDeletePostClick,
 }) {
   const getTagsByPostId = (postID) => {
     const tagsArr = [];
@@ -67,9 +71,12 @@ function Post({
     );
   });
 
-  // useEffect(() => {
-  //   sendLikesDislikesToServer();
-  // }, [didUserDislikePost, didUserLikePost]);
+  if (postWriter[0] === userId) {
+    isAddTagBtn = true;
+    isDeleteBtn = true;
+  } else {
+    isAddTagBtn = false;
+  }
 
   const handleDislikeClick = () => {
     if (didUserDislikePost) {
@@ -141,6 +148,12 @@ function Post({
       data-testid={`post-${postId}`}
     >
       <Card className="post">
+        {isDeleteBtn && (
+          <DeleteButton
+            handleDeletePostClick={handleDeletePostClick}
+            postId={postId}
+          />
+        )}
         <ListItemButton disableGutters>
           <CardContent>
             <Typography
@@ -194,7 +207,7 @@ function Post({
             data-testid={`postContent-readMoreButton`}
             onClick={() => handleReadMore()}
           >
-            <AutoStoriesIcon></AutoStoriesIcon>
+            <AutoStoriesIcon sx={{ color: "#a8a8a8" }} />
           </IconButton>
           <IconButton
             aria-label="dislike"

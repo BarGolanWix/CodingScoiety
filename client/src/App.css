@@ -117,3 +117,20 @@
 button.visibilityHidden {
   display: none;
 }
+
+a.visibilityHidden {
+  display: none;
+}
+
+button.css-1bw9b9-MuiButtonBase-root-MuiFab-root {
+  box-shadow: none;
+  padding: 5px;
+  border-radius: 20%;
+  background-color: #f1ededcf;
+  border: none;
+  color: #dfd8d8cf;
+}
+
+.seachFriends-SearchBox-ButtonGroup {
+  display: flex;
+}
