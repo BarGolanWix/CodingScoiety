@@ -88,14 +88,9 @@ function CustomToolbar({
         </Typography>
         <Button
           className={
-            window.location.href !== "http://localhost:3000/add-new-post" &&
-            window.location.href !== "http://localhost:3000/search-friends" &&
-            window.location.href !== "http://localhost:3000/" &&
-            window.location.href !==
-              "http://localhost:3000/my-recommended-posts" &&
-            window.location.href !== "http://localhost:3000/signUp"
-              ? ""
-              : "visibilityHidden"
+            !window.location.href.startsWith("http://localhost:3000/home")
+              ? "visibilityHidden"
+              : ""
           }
           size="large"
           sx={{ letterSpacing: 1 }}

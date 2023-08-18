@@ -31,10 +31,18 @@ function AddNewPost({ handleAddPost, tagsList }) {
   };
 
   const setTitleLimited = (event) => {
-    if (title.length <= 80) {
+    if (title.length < 80) {
       setTitle(event.target.value);
     } else {
       alert("Title too long! Title must be 80 characters or less...");
+    }
+  };
+
+  const setContentLimited = (event) => {
+    if (content.length < 300) {
+      setContent(event.target.value);
+    } else {
+      alert("Content too long! Content must be 300 characters or less...");
     }
   };
 
@@ -88,7 +96,7 @@ function AddNewPost({ handleAddPost, tagsList }) {
             error={false}
             value={content}
             onChange={(event) => {
-              setContent(event.target.value);
+              setContentLimited(event);
             }}
             data-testid="addNewPost-postContent"
           />

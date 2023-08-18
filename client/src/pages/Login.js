@@ -116,7 +116,7 @@ function Login({ setAdmitted, baseURL }) {
             <OutlinedInput
               type="password"
               error={false}
-              id="login-userName"
+              id="login-password"
               label="UserName"
               name="password"
               fullWidth

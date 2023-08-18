@@ -6,10 +6,10 @@ const cors = require("cors");
 const fs = require("fs");
 
 const { baseUrl } = require("../constants");
-const { Posts } = require("./model/Posts");
-const { Tags } = require("./model/Tags");
-const { Users } = require("./model/Users");
-const { Credentials } = require("./model/Credentials");
+const { Posts } = require("./Persist/Posts");
+const { Tags } = require("./Persist/Tags");
+const { Users } = require("./Persist/Users");
+const { Credentials } = require("./Persist/Credentials");
 
 const app = express();
 const port = 3080;
@@ -399,6 +399,37 @@ app.put("/users/follow", cors(corsOptions), (req, res) => {
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
+});
+
+///////////////////////////////////// minesweeper /////////////////////////////////////
+
+// ******** update username to userId *********
+app.put("/mineSweeper/storeHighscore", (req, res) => {
+  const userId = req.cookies?.userId;
+  const { score } = req.body;
+  const userToUpdate = Users.find((user) => user.userId === userId);
+
+  if (Number(userToUpdate.highScore) < score) {
+    userToUpdate.highScore = score;
+    res.status(200).send({ scucess: true, message: "New High Score!" });
+  } else if (Number(userToUpdate.highScore) >= score) {
+    res.status(200).send({ scucess: true, message: "You had better scores" });
+  } else {
+    res.status(403).send({ scucess: false, message: "Could not find user" });
+  }
+});
+
+app.get("/mineSweeper/getLeaderBoardData", (req, res) => {
+  let highScores = [];
+  Users.map((user) => {
+    highScores.push({
+      userId: user.userId,
+      name: user.userName,
+      highScore: user.highScore,
+    });
+  });
+  highScores.sort((a, b) => b.highScore - a.highScore);
+  return res.status(200).send(highScores);
 });
 
 ///////////////////////////////////// write to disc /////////////////////////////////////

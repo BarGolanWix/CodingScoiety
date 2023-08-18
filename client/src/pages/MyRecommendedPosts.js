@@ -1,6 +1,6 @@
 import { List, Typography } from "@mui/material";
 import { useEffect } from "react";
-import Post from "../components/Post";
+import Post from "../components/Posts/Post";
 
 function MyRecommendedPosts({
   Posts,

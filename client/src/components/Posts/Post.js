@@ -12,9 +12,9 @@ import ThumbDownOffAltIcon from "@mui/icons-material/ThumbDownOffAlt";
 import ThumbDownAltIcon from "@mui/icons-material/ThumbDownAlt";
 import ThumbUpOffAltIcon from "@mui/icons-material/ThumbUpOffAlt";
 import ThumbUpAltIcon from "@mui/icons-material/ThumbUpAlt";
-import AddTagButton from "./AddTagButton";
+import AddTagButton from "../Tags/AddTagButton";
 
-import Tag from "./Tag";
+import Tag from "../Tags/Tag";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import DeleteButton from "./DeleteButton";
@@ -146,6 +146,7 @@ function Post({
       key={`post-${postId}`}
       className="post"
       data-testid={`post-${postId}`}
+      sx={{ marginTop: "5%" }}
     >
       <Card className="post">
         {isDeleteBtn && (

@@ -7,9 +7,10 @@ import AddNewPost from "./pages/AddNewPost";
 import MyRecommendedPosts from "./pages/MyRecommendedPosts";
 import Login from "./pages/Login";
 import SearchFriends from "./pages/SearchFriends";
-import CustomToolbar from "./components/CustomToolbar.js";
+import CustomToolbar from "./components/UI/CustomToolbar.js";
 import SignUp from "./pages/SignUp";
-import LoggedIn from "./pages/LoggedIn";
+import Playground from "./components/Playground/Playground";
+import MineSweeper from "./components/Playground/MineSweeper/MineSweeper";
 
 import {
   Typography,
@@ -23,6 +24,7 @@ import {
 
 function App() {
   const baseURL = "http://localhost:3080";
+  localStorage.setItem("baseURL", baseURL);
   const popularityOptions = [1, 2, 4, 10, 20];
 
   const [userId, setUserId] = useState("");
@@ -40,24 +42,6 @@ function App() {
   const [selectedTagId, setSelectedTagId] = useState("");
 
   const [anchorEl, setAnchorEl] = useState(null);
-
-  const [alertMsg, setAlertMsg] = useState("");
-  const [showAlert, setShowAlert] = useState(false);
-  const [alertType, setAlertType] = useState("");
-
-  useEffect(() => {
-    if (showAlert) {
-      setTimeout(() => {
-        handleAlert("", false, "");
-      }, 1500);
-    }
-  }, [showAlert]);
-
-  const handleAlert = (message, isShow, type) => {
-    setAlertMsg(message);
-    setShowAlert(isShow);
-    setAlertType(type);
-  };
 
   useEffect(() => {
     setAdmitted(localStorage.getItem("admitted"));
@@ -78,7 +62,7 @@ function App() {
         localStorage.setItem("userId", response.data.id);
       })
       .catch((error) => {
-        handleAlert(error.message, true, "error");
+        console.log(error.message);
       });
   }, [admitted]);
 
@@ -90,7 +74,7 @@ function App() {
         setFilteredPosts([...response.data["filteredPosts"]]);
       })
       .catch((error) => {
-        handleAlert(error.message, true, "error");
+        console.log(error.message);
       });
   }, []);
 
@@ -106,7 +90,7 @@ function App() {
         setTagsList(tagsList);
       })
       .catch((error) => {
-        handleAlert(error.message, true, "error");
+        console.log(error.message);
       });
   }, []);
 
@@ -126,7 +110,7 @@ function App() {
         setFilteredPosts([...response.data["filteredPosts"]]);
       })
       .catch((error) => {
-        handleAlert(error.message, true, "error");
+        console.log(error.message);
       });
   };
 
@@ -177,7 +161,7 @@ function App() {
         setTagsList(tagsList);
       })
       .catch((error) => {
-        handleAlert(error.message, true, "error");
+        console.log(error);
       });
   };
 
@@ -223,13 +207,6 @@ function App() {
         handlePopularityMenuClose={handlePopularityMenuClose}
         baseURL={baseURL}
       />
-      {showAlert && (
-        <Snackbar>
-          <Alert severity={alertType} data-testid="alert">
-            {alertMsg}
-          </Alert>
-        </Snackbar>
-      )}
       <Router>
         <Routes>
           <Route
@@ -279,7 +256,10 @@ function App() {
             path="/search-friends"
             element={<SearchFriends baseURL={baseURL} userId={userId} />}
           />
-          <Route path="/logged-in" element={<LoggedIn baseURL={baseURL} />} />
+          <Route
+            path="/minesweeper"
+            element={<MineSweeper baseURL={baseURL} userId={userId} />}
+          />
         </Routes>
       </Router>
     </div>

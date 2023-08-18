@@ -22,7 +22,7 @@ const Posts = [
     writer: ["ed832cad-3fdd-479e-8e82-35f02d78ef0a", "Jonathan"],
     title: "Example Title 3",
     content:
-      "Example content that has more then 300 characters, Example content that has more then 300 characters, Example content that has more then 300 characters, Example content that has more then 300 characters, Example content that has more then 300 characters, Example content that has more then 300 characters",
+      "Example content that has more then 200 characters, Example content that has more then 200 characters, Example content that has more then 200 characters, Example content that has more then 200 characters, Example content that has more then 200 characters",
     userId: "11",
     likes: ["ed832cad-3fdd-479e-8e82-35f02d78ef0a"],
     dislikes: ["11"],

@@ -1,9 +1,9 @@
 import React from "react";
-import UserCard from "../components/UserCard";
+import UserCard from "../components/Users/UserCard";
 import axios from "axios";
 import { useState, useEffect, useCallback } from "react";
 import { List, Typography, Button, ButtonGroup } from "@mui/material";
-import UserSearchBox from "../components/UserSearchBox";
+import UserSearchBox from "../components/Users/UserSearchBox";
 
 function SearchFriends({ baseURL }) {
   const usersQantum = 8;

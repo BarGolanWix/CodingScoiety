@@ -11,7 +11,7 @@ import {
   OutlinedInput,
   Button,
 } from "@mui/material";
-import Tag from "../components/Tag";
+import Tag from "./Tag";
 import AddTagButton from "./AddTagButton";
 import { useState } from "react";
 

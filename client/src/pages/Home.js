@@ -1,7 +1,8 @@
 import { List, Typography } from "@mui/material";
-import FloatingMenu from "../components/FloatingMenu";
-import Post from "../components/Post";
-import TagsCloud from "../components/TagsCloud";
+import FloatingMenu from "../components/UI/FloatingMenu";
+import Playground from "../components/Playground/Playground";
+import Post from "../components/Posts/Post";
+import TagsCloud from "../components/Tags/TagsCloud";
 import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import axios from "axios";
@@ -130,13 +131,15 @@ function Home({
           </Typography>
         )}
       </List>
-      {admitted.includes("admin") && (
+      {admitted.includes("admin") ? (
         <TagsCloud
           tagsList={tagsList}
           handleAddNewTag={handleAddNewTag}
           selectedTagId={selectedTagId}
           handleTagClick={handleTagClick}
         />
+      ) : (
+        <Playground userId={userId} baseURL={baseURL} />
       )}
       <FloatingMenu
         menuOptions={tagsList}
