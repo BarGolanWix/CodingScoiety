@@ -14,7 +14,9 @@ import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import RecommendIcon from "@mui/icons-material/Recommend";
 import HomeIcon from "@mui/icons-material/Home";
 import SearchIcon from "@mui/icons-material/Search";
+import { useContext } from "react";
 import axios from "axios";
+import AdminContext from "../../store/AdminContext";
 
 function CustomToolbar({
   admitted,
@@ -25,6 +27,8 @@ function CustomToolbar({
   handlePopularityMenuClose,
   baseURL,
 }) {
+  const ctx = useContext(AdminContext);
+
   const handleSignOutClick = async () => {
     try {
       const response = await axios.put(`${baseURL}/logout`);
@@ -53,6 +57,8 @@ function CustomToolbar({
               sx={{ letterSpacing: 1 }}
               startIcon={<AddCircleIcon />}
               data-testid="addNewPostBtn"
+              value="addNewPostBtn"
+              disabled={ctx.functionalities.addNewPost.checked}
             >
               Add a New Post
             </Button>
@@ -62,6 +68,8 @@ function CustomToolbar({
               sx={{ letterSpacing: 1 }}
               startIcon={<RecommendIcon />}
               data-testid="myRecommendedPostsBtn"
+              value="myRecommendedPostsBtn"
+              disabled={ctx.functionalities.exploreMorePosts.checked}
             >
               Explore more posts
             </Button>
@@ -71,6 +79,8 @@ function CustomToolbar({
               sx={{ letterSpacing: 1 }}
               startIcon={<SearchIcon />}
               data-testid="mySearchFriendsBtn"
+              value="mySearchFriendsBtn"
+              disabled={ctx.functionalities.searchFriends.checked}
             >
               Search Friends
             </Button>
@@ -97,6 +107,8 @@ function CustomToolbar({
           startIcon={<FilterAltIcon />}
           onClick={(e) => handlePopularityClick(e)}
           data-testid="popularityBtn"
+          value="popularityBtn"
+          disabled={ctx.functionalities.popularityFilter.checked}
         >
           Filter by Popularity
         </Button>

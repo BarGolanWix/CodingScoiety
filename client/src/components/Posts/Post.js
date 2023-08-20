@@ -46,7 +46,7 @@ function Post({
     }
     return tagsArr;
   };
-
+  const admitted = localStorage.getItem("admitted");
   const tagsNameArr = getTagsByPostId(postId);
   const isTag = tagsNameArr.length > 0 ? true : false;
   const [didUserLikePost, setDidUserLikePost] = useState(false);
@@ -142,14 +142,14 @@ function Post({
 
   return (
     <ListItem
+      className="post"
       alignItems="flex-start"
       key={`post-${postId}`}
-      className="post"
       data-testid={`post-${postId}`}
       sx={{ marginTop: "5%" }}
     >
       <Card className="post">
-        {isDeleteBtn && (
+        {(isDeleteBtn || admitted.includes("admin")) && (
           <DeleteButton
             handleDeletePostClick={handleDeletePostClick}
             postId={postId}

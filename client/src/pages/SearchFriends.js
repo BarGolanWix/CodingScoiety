@@ -86,6 +86,10 @@ function SearchFriends({ baseURL }) {
     setUsersRange({ base: newBase, limit: newLimit });
   };
 
+  const deleteUserHandler = () => {
+    console.log("function delete user");
+  };
+
   return (
     <>
       {" "}
@@ -151,6 +155,7 @@ function SearchFriends({ baseURL }) {
                 isFollowed={
                   followedUsers.includes(user.userName) ? true : false
                 }
+                onDelteClick={deleteUserHandler}
               />
             );
           })}

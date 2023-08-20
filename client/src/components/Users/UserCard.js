@@ -9,8 +9,17 @@ import {
 } from "@mui/material";
 import Image from "mui-image";
 import { useState } from "react";
+import DeleteButton from "./DeleteButton";
 
-function UserCard({ userId, userName, userImage, onFollowClick, isFollowed }) {
+function UserCard({
+  userId,
+  userName,
+  userImage,
+  onFollowClick,
+  isFollowed,
+  onDelteClick,
+}) {
+  const admitted = localStorage.getItem("admitted");
   const [follow, setFollow] = useState(isFollowed);
 
   const followClickHandler = () => {
@@ -29,6 +38,9 @@ function UserCard({ userId, userName, userImage, onFollowClick, isFollowed }) {
         data-testid={`userCard-${userId}`}
       >
         <Card>
+          {admitted.includes("admin") && (
+            <DeleteButton onDelteClick={onDelteClick} userId={userId} />
+          )}
           <ListItemButton disableGutters sx={{ margin: "4px" }}>
             <CardContent className="userCard">
               <Typography

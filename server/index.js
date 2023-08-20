@@ -10,6 +10,8 @@ const { Posts } = require("./Persist/Posts");
 const { Tags } = require("./Persist/Tags");
 const { Users } = require("./Persist/Users");
 const { Credentials } = require("./Persist/Credentials");
+const { Configuration } = require("./Persist/Configuration");
+const { Logs } = require("./Persist/Logs");
 
 const app = express();
 const port = 3080;
@@ -403,11 +405,11 @@ app.listen(port, () => {
 
 ///////////////////////////////////// minesweeper /////////////////////////////////////
 
-// ******** update username to userId *********
 app.put("/mineSweeper/storeHighscore", (req, res) => {
   const userId = req.cookies?.userId;
   const { score } = req.body;
   const userToUpdate = Users.find((user) => user.userId === userId);
+  console.log("recived");
 
   if (Number(userToUpdate.highScore) < score) {
     userToUpdate.highScore = score;
@@ -432,6 +434,37 @@ app.get("/mineSweeper/getLeaderBoardData", (req, res) => {
   return res.status(200).send(highScores);
 });
 
+///////////////////////////////////// admin operations /////////////////////////////////////
+
+app.put("/configuration/store", (req, res) => {
+  let { checkboxId, checkedSts } = req.body.functionality;
+  try {
+    checkedSts = JSON.parse(checkedSts);
+  } catch (error) {
+    return res.status(500).send("Could not parse the checked value");
+  }
+  if (checkboxId !== undefined && checkedSts !== undefined) {
+    Configuration[checkboxId].checked = Boolean(checkedSts);
+    res.status(200).send({ success: true, newConfiguration: checkedSts });
+  } else {
+    res.status(401).send({ success: true, newConfiguration: checkedSts });
+  }
+});
+
+app.get("/configuration/get", (req, res) => {
+  res.status(200).send({ Configuration });
+});
+
+app.get("/logs/get", (req, res) => {
+  const { logsOptions } = req.query;
+  const checkedOptions = logsOptions.filter(
+    (option) => option.checked == "true"
+  );
+  const checkedOperations = checkedOptions.map((option) => option.id);
+  console.log(checkedOperations);
+  res.status(200).send({ Logs });
+});
+
 ///////////////////////////////////// write to disc /////////////////////////////////////
 
 function writeDataToFile(filename, data) {
@@ -446,22 +479,28 @@ function writeDataToFile(filename, data) {
 
 setInterval(() => {
   writeDataToFile(
-    "./model/Posts.js",
+    "./Persist/Posts.js",
     `const Posts = ${JSON.stringify(Posts)}; module.exports = { Posts }`
   );
   writeDataToFile(
-    "./model/Tags.js",
+    "./Persist/Tags.js",
     `const Tags = ${JSON.stringify(Tags)}; module.exports = { Tags }`
   );
   writeDataToFile(
-    "./model/Users.js",
+    "./Persist/Users.js",
     `const Users = ${JSON.stringify(Users)}; module.exports = { Users }`
   );
   writeDataToFile(
-    "./model/Credentials.js",
+    "./Persist/Credentials.js",
     `const Credentials = ${JSON.stringify(
       Credentials
     )}; module.exports = { Credentials }`
+  );
+  writeDataToFile(
+    "./Persist/Configuration.js",
+    `const Configuration = ${JSON.stringify(
+      Configuration
+    )}; module.exports = { Configuration }`
   );
 }, 30000);
 

@@ -35,15 +35,11 @@ function TagsCloud({
   };
 
   return (
-    <Container
-      maxWidth="xs"
-      className="tagsListContainer"
-      data-testid="tagList"
-    >
+    <>
       <Typography
         variant="h6"
-        sx={{ fontWeight: "bold" }}
-        color="primary"
+        sx={{ fontWeight: "bold", marginTop: "10%" }}
+        color="secondary"
         data-testid="tagList-title"
       >
         Tags List
@@ -103,7 +99,8 @@ function TagsCloud({
           </Card>
         )}
       </Box>
-    </Container>
+    </>
+    // </Container>
   );
 }
 

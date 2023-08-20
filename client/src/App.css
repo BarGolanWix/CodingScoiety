@@ -12,6 +12,12 @@
   position: relative;
 }
 
+@media (max-width: 600px) {
+  .container {
+    flex-direction: column;
+  }
+}
+
 .usersContainer {
   display: flex;
   flex-wrap: wrap;
@@ -144,11 +150,6 @@ div.mineSweeper {
   align-items: center;
 }
 
-article.board {
-  /* border: 2.5px black solid; */
-  /* width: 310px; */
-}
-
 div.row {
   display: flex;
   justify-content: flex-start;
@@ -161,10 +162,6 @@ div.row {
 }
 
 button.cell {
-  /* width: 15px;
-  height: 15px;
-  padding: 15px; */
-  /* border: 1px solid black; */
   background-color: rgb(252, 205, 205);
   display: flex;
   justify-content: center;
@@ -237,4 +234,19 @@ button.cell {
 
 tr.leaderboard-tableRow-currUser td {
   font-weight: bold;
+}
+
+.leaderboard-buttons {
+  display: flex;
+  justify-content: space-between;
+}
+
+.functionlitiesList {
+  display: flex;
+  flex-direction: column;
+}
+
+.logsList {
+  display: flex;
+  flex-direction: column;
 }

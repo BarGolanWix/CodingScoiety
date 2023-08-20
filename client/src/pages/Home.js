@@ -2,10 +2,12 @@ import { List, Typography } from "@mui/material";
 import FloatingMenu from "../components/UI/FloatingMenu";
 import Playground from "../components/Playground/Playground";
 import Post from "../components/Posts/Post";
-import TagsCloud from "../components/Tags/TagsCloud";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useSearchParams } from "react-router-dom";
 import axios from "axios";
+import Panel from "../components/AdminPanel/Panel";
+import AdminContext from "../store/AdminContext";
+import { v4 } from "uuid";
 
 function Home({
   Posts,
@@ -19,9 +21,14 @@ function Home({
   filterPostsByTag,
   admitted,
 }) {
+  const ctx = useContext(AdminContext);
   const [searchParams, setSearchParams] = useSearchParams();
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedPostId, setSelectedPostId] = useState("");
+
+  useEffect(() => {
+    ctx.getConfiguration();
+  }, []);
 
   ///////////////////////////////////// handle query param /////////////////////////////////////
 
@@ -91,7 +98,7 @@ function Home({
       const index = Posts.indexOf(postToDelete);
       index !== -1 && Posts.splice(index, 1);
       index === -1 && console.log("postId not found");
-      setSelectedPostId(-1);
+      setSelectedPostId(v4());
     } catch (error) {
       console.log(error);
     }
@@ -132,7 +139,7 @@ function Home({
         )}
       </List>
       {admitted.includes("admin") ? (
-        <TagsCloud
+        <Panel
           tagsList={tagsList}
           handleAddNewTag={handleAddNewTag}
           selectedTagId={selectedTagId}

@@ -9,7 +9,6 @@ import Login from "./pages/Login";
 import SearchFriends from "./pages/SearchFriends";
 import CustomToolbar from "./components/UI/CustomToolbar.js";
 import SignUp from "./pages/SignUp";
-import Playground from "./components/Playground/Playground";
 import MineSweeper from "./components/Playground/MineSweeper/MineSweeper";
 
 import {
@@ -23,9 +22,8 @@ import {
 } from "@mui/material";
 
 function App() {
-  const baseURL = "http://localhost:3080";
-  localStorage.setItem("baseURL", baseURL);
   const popularityOptions = [1, 2, 4, 10, 20];
+  const baseURL = localStorage.getItem("baseURL");
 
   const [userId, setUserId] = useState("");
   const [admitted, setAdmitted] = useState("");

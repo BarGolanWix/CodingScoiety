@@ -25,11 +25,10 @@ function MineSweeperProvider(props) {
   };
 
   const storeHighScore = async () => {
-    console.log(`${baseURL}/mineSweeper/storeHighscore`);
     try {
       const timerToSend = { score: timer };
       const response = await axios.put(
-        `${baseURL}/minesSweeper/storeHighscore`,
+        `${baseURL}/mineSweeper/storeHighscore`,
         timerToSend
       );
       console.log(response);

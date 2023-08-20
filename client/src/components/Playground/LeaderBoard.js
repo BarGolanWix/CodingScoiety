@@ -10,11 +10,6 @@ import {
   Paper,
 } from "@mui/material";
 
-const leaderboardData = [
-  { rank: 1, name: "Player 1", score: 100, userId: "11" },
-  { rank: 2, name: "Player 2", score: 95, userId: "12" },
-];
-
 const Leaderboard = ({ userId }) => {
   const [scrollIndex, setScrollIndex] = useState(0);
   const ctx = useContext(MineSweeperContext);
@@ -34,13 +29,28 @@ const Leaderboard = ({ userId }) => {
   }, [ctx.leaderBoardData]);
 
   return (
-    <TableContainer component={Paper}>
+    <TableContainer component={Paper} sx={{ height: "80vh" }}>
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell sx={{ color: "#9c27b0" }}>Rank</TableCell>
-            <TableCell sx={{ color: "#9c27b0" }}>Name</TableCell>
-            <TableCell sx={{ color: "#9c27b0" }}>Score</TableCell>
+            <TableCell
+              variant="text"
+              sx={{ color: "#9c27b0", fontSize: "1rem", fontWeight: "bold" }}
+            >
+              Rank
+            </TableCell>
+            <TableCell
+              variant="text"
+              sx={{ color: "#9c27b0", fontSize: "1rem", fontWeight: "bold" }}
+            >
+              Name
+            </TableCell>
+            <TableCell
+              variant="text"
+              sx={{ color: "#9c27b0", fontSize: "1rem", fontWeight: "bold" }}
+            >
+              Score
+            </TableCell>
           </TableRow>
         </TableHead>
         <TableBody>

@@ -14,7 +14,8 @@ import { useNavigate } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
 
-function Login({ setAdmitted, baseURL }) {
+function Login({ setAdmitted }) {
+  const baseURL = localStorage.getItem("baseURL");
   const navigate = useNavigate();
   const [account, setAccount] = useState({ userName: "", password: "" });
   const [rememberMe, setRememberMe] = useState(false);
