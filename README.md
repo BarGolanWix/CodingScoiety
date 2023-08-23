@@ -17,7 +17,9 @@
     - [Explore More Posts](#explore-more-posts)
     - [Search Friends](#search-friends)
   - [The Feed](#the-feed)
+  - [Authorization / Authentication](#authorization--authentication)
   - [Running the Program](#running-the-program)
+  - [Submission](#submission)
 
 ## App Structure
 
@@ -65,6 +67,15 @@ The "Search Friends" section facilitates user connections. Users can search for 
 
 The "Feed" is a dynamic stream of posts written by the social media's users whom the user follows. This personalized feed ensures that users stay up-to-date with the latest conversations and developments in the coding world.
 
+## Authorization / Authentication
+
+**Authorization** - There are two main roles in the system:
+
+1. Admin - authorized to perform all functionalities available in its control panel (see [admin control panel](#the-admin-control-panel)). Additionally, the admin can remove users from the system and delete posts of other users.
+2. Authorized user - authorized to perform the standard operations available. They cannot perform operations affecting other users or the app's functionality.
+
+**Authentication** - Session and cookie-based mechanism. When a user logs in or signs up, an access token is generated. From this moment on, every request to the server is only served if the access token is valid.
+
 ## Running the Program
 
 To set up and run the Coding Society program on your local machine, follow these steps:
@@ -82,3 +93,63 @@ npm start
 ```
 
 This command will automatically start both the client and server servers. Please note that the program is configured to run on port 3000 for the client and port 3080 for the server. Make sure that these ports are available and not in use by other applications.
+
+## Submission
+
+**Additional Pages**
+
+1.  [Explore More Posts](#explore-more-posts).
+2.  [Playground](#the-playground) and the Minesweeper game.
+
+**Additional Features**
+
+1. Posts - Like, dislike, readmore, tag.
+2. [Search Friends](#search-friends) - Fetching in blocks and scrolling between them using next / prev buttons.
+3. Filter posts according to tags.
+
+**Hard to do**
+
+1. Autorization and authentication mechanism.
+2. Data synchronization with all users.
+
+**Routes**
+
+1. User Authorization Routes:
+
+- **GET "/"**.
+- **POST "/signUp"**: User sign-up.
+- **POST "/credentialsCheck"**: Check user credentials for login.
+- **GET "/autoCredentialsCheck"**: Checks if session is valid.
+- **GET "/getUserId"**: Get user ID.
+- **PUT "/logout"**: Log out.
+
+1. Post Routes:
+
+- **GET "/posts"**: Get filtered posts (popularity and friends).
+- **POST "/posts"**: Add a new post.
+- **PUT "/deletePost"**: Delete a post.
+- **POST "/posts/tags"**: Add a tag to a post.
+- **POST "/posts/likesDislikes"**: Like/dislike a post.
+- **GET "/posts/recommended"**: Get recommended posts.
+
+3. Tag Routes:
+
+- **GET "/tags"**: Get tags.
+- **POST "/tags/tagName/:tagName"**: Create a new tag.
+
+4. Users and Followers Routes:
+
+- **GET "/users"**: Get users list.
+- **GET "/users/searchFriends/:keyword"**: Search for friends.
+- **PUT "/users/follow"**: Follow/unfollow a user.
+
+5. Minesweeper Routes:
+
+- **PUT "/mineSweeper/storeHighscore"**: Store highscore in Minesweeper.
+- **GET "/mineSweeper/getLeaderBoardData"**: Get Minesweeper leaderboard data.
+
+6. Admin Operations Routes:
+
+- **PUT "/configuration/store"**: Store configuration settings.
+- **GET "/configuration/get"**: Get configuration settings.
+- **GET "/logs/get"**: Get logs.

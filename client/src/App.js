@@ -147,6 +147,7 @@ function App() {
       )
       .then((response) => {
         getPosts();
+        getTags();
       });
   };
 
@@ -167,6 +168,7 @@ function App() {
   };
 
   ///////////////////////////////////// handle click events /////////////////////////////////////
+
   const handlePopularityClick = (event) => {
     setAnchorEl(event.currentTarget);
   };

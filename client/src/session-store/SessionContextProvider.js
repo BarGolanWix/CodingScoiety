@@ -24,7 +24,7 @@ function SessionContextProvider(props) {
         let decodedAccessToken;
         const jsonStartIndex = decodedValue.indexOf(":");
         if (jsonStartIndex !== -1) {
-          const jsonString = decodedValue.substring(jsonStartIndex + 1); // Remove 'j:'
+          const jsonString = decodedValue.substring(jsonStartIndex + 1);
           try {
             decodedAccessToken = JSON.parse(jsonString);
           } catch (error) {

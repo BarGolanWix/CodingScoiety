@@ -132,7 +132,6 @@ app.post("/credentialsCheck", cors(corsOptions), (req, res) => {
 });
 
 app.use((req, res, next) => {
-  console.log(req);
   let currentAccessToken = req.cookies?.accessToken;
   const currentUserId = req.cookies?.userId;
   const userInDisc = Credentials.find((user) => user.userId === currentUserId);
@@ -537,8 +536,7 @@ function generateAccessToken(rememberMe) {
   if (rememberMe) {
     expirationDate.setHours(expirationDate.getHours() + 240);
   } else {
-    // expirationDate.setMinutes(expirationDate.getMinutes() + 30);
-    expirationDate.setMinutes(expirationDate.getMinutes() + 1);
+    expirationDate.setMinutes(expirationDate.getMinutes() + 30);
   }
 
   const accessToken = uuidv4();

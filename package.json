@@ -9,15 +9,10 @@
     "test:example": "npx playwright test tests/exampleTests"
   },
   "repository": {
-    "type": "git",
-    "url": "git+ssh://git@github.com/wix-private/enter_2023_exam_blog_recommendation.git"
+    "type": "git"
   },
   "author": "",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/wix-private/enter_2023_exam_blog_recommendation/issues"
-  },
-  "homepage": "https://github.com/wix-private/enter_2023_exam_blog_recommendation#readme",
   "dependencies": {
     "@fontsource/roboto": "^5.0.8",
     "@fortawesome/free-solid-svg-icons": "^6.4.2",
