@@ -5,7 +5,7 @@ const Users = [
     profileImage: "/images/Jhon.jpg",
     posts: ["11", "12", "13"],
     following: ["Jhon", "JhonTravolta", "Jonathan", "JonathanTheKing"],
-    highScore: "-1",
+    highScore: "100",
   },
   {
     userId: "111",
@@ -13,7 +13,7 @@ const Users = [
     profileImage: "/images/Jhon.jpg",
     posts: ["11", "12", "13"],
     following: ["Jhon", "Lisa", "Jonathan"],
-    highScore: "-1",
+    highScore: "250",
   },
   {
     userId: "12",
@@ -21,7 +21,7 @@ const Users = [
     profileImage: "/images/Lisa.jpg",
     posts: ["11", "12", "13"],
     following: [],
-    highScore: "-1",
+    highScore: "303",
   },
   {
     userId: "13",
@@ -29,7 +29,7 @@ const Users = [
     profileImage: "/images/Jonathan.jpg",
     posts: ["11", "12", "13"],
     following: ["JhonTravolta", "Lisa"],
-    highScore: "-1",
+    highScore: "401",
   },
   {
     userId: "ed832cad-3fdd-479e-8e82-35f02d78ef0a",
@@ -37,7 +37,7 @@ const Users = [
     profileImage: "/images/Jonathan.jpg",
     posts: ["11", "12", "13"],
     following: ["JhonTravolta", "Jhon"],
-    highScore: "-1",
+    highScore: "500",
   },
   {
     userId: "21",
@@ -45,7 +45,7 @@ const Users = [
     profileImage: "/images/Alice.jpg",
     posts: [],
     following: [],
-    highScore: "-1",
+    highScore: "707",
   },
   {
     userId: "22",
@@ -53,7 +53,7 @@ const Users = [
     profileImage: "/images/Bob.jpg",
     posts: [],
     following: [],
-    highScore: "-1",
+    highScore: "640",
   },
   {
     userId: "23",
@@ -61,7 +61,7 @@ const Users = [
     profileImage: "/images/Charlie.jpg",
     posts: [],
     following: [],
-    highScore: "-1",
+    highScore: "0",
   },
   {
     userId: "24",
@@ -69,7 +69,7 @@ const Users = [
     profileImage: "/images/David.jpg",
     posts: [],
     following: [],
-    highScore: "-1",
+    highScore: "0",
   },
   {
     userId: "25",
@@ -77,7 +77,7 @@ const Users = [
     profileImage: "/images/Eve.jpg",
     posts: [],
     following: [],
-    highScore: "-1",
+    highScore: "0",
   },
   {
     userId: "26",
@@ -85,7 +85,7 @@ const Users = [
     profileImage: "/images/Frank.jpg",
     posts: [],
     following: [],
-    highScore: "-1",
+    highScore: "0",
   },
   {
     userId: "27",
@@ -93,7 +93,7 @@ const Users = [
     profileImage: "/images/Grace.jpg",
     posts: [],
     following: [],
-    highScore: "-1",
+    highScore: "0",
   },
   {
     userId: "28",
@@ -101,7 +101,7 @@ const Users = [
     profileImage: "/images/Henry.jpg",
     posts: [],
     following: [],
-    highScore: "-1",
+    highScore: "0",
   },
   {
     userId: "29",
@@ -109,7 +109,7 @@ const Users = [
     profileImage: "/images/Isabel.jpg",
     posts: [],
     following: [],
-    highScore: "-1",
+    highScore: "0",
   },
   {
     userId: "30",
@@ -117,7 +117,7 @@ const Users = [
     profileImage: "/images/Jack.jpg",
     posts: [],
     following: [],
-    highScore: "-1",
+    highScore: "0",
   },
   {
     userId: "31",
@@ -125,7 +125,7 @@ const Users = [
     profileImage: "/images/Kate.jpg",
     posts: [],
     following: [],
-    highScore: "-1",
+    highScore: "0",
   },
   {
     userId: "32",
@@ -133,7 +133,7 @@ const Users = [
     profileImage: "/images/Liam.jpg",
     posts: [],
     following: [],
-    highScore: "-1",
+    highScore: "0",
   },
   {
     userId: "33",
@@ -141,7 +141,7 @@ const Users = [
     profileImage: "/images/Mia.jpg",
     posts: [],
     following: [],
-    highScore: "-1",
+    highScore: "0",
   },
   {
     userId: "34",
@@ -149,7 +149,7 @@ const Users = [
     profileImage: "/images/Noah.jpg",
     posts: [],
     following: [],
-    highScore: "-1",
+    highScore: "0",
   },
   {
     userId: "35",
@@ -157,7 +157,7 @@ const Users = [
     profileImage: "/images/Olivia.jpg",
     posts: [],
     following: [],
-    highScore: "-1",
+    highScore: "0",
   },
   {
     userId: "36",
@@ -165,7 +165,7 @@ const Users = [
     profileImage: "/images/William.jpg",
     posts: [],
     following: [],
-    highScore: "-1",
+    highScore: "0",
   },
   {
     userId: "37",
@@ -173,7 +173,7 @@ const Users = [
     profileImage: "/images/Sophia.jpg",
     posts: [],
     following: [],
-    highScore: "-1",
+    highScore: "0",
   },
   {
     userId: "38",
@@ -181,7 +181,7 @@ const Users = [
     profileImage: "/images/James.jpg",
     posts: [],
     following: [],
-    highScore: "-1",
+    highScore: "0",
   },
   {
     userId: "39",
@@ -189,7 +189,7 @@ const Users = [
     profileImage: "/images/Emma.jpg",
     posts: [],
     following: [],
-    highScore: "-1",
+    highScore: "0",
   },
   {
     userId: "40",
@@ -197,7 +197,7 @@ const Users = [
     profileImage: "/images/Benjamin.jpg",
     posts: [],
     following: [],
-    highScore: "-1",
+    highScore: "0",
   },
 ];
 module.exports = { Users };

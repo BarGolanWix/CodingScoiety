@@ -12,8 +12,7 @@ import Leaderboard from "./LeaderBoard";
 import { useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import MineSweeperProvider from "./store/MineSweeperProvider";
-import AdminContext from "../../store/AdminContext";
-
+import AdminContext from "../AdminPanel/store/AdminContext";
 function Playground({ userId }) {
   const navigate = useNavigate();
   const ctx = useContext(AdminContext);

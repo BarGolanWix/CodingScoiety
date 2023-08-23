@@ -1,12 +1,16 @@
 import React from "react";
 import UserCard from "../components/Users/UserCard";
 import axios from "axios";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import SessionContext from "../session-store/SessionContext";
 import { List, Typography, Button, ButtonGroup } from "@mui/material";
 import UserSearchBox from "../components/Users/UserSearchBox";
 
 function SearchFriends({ baseURL }) {
   const usersQantum = 8;
+  const navigate = useNavigate();
+  const sessionCtx = useContext(SessionContext);
   const [users, setUsers] = useState([]);
   const [usersRange, setUsersRange] = useState({ base: 0, limit: usersQantum });
   const [filteredUsers, setFilteredUsers] = useState([]);
@@ -15,6 +19,12 @@ function SearchFriends({ baseURL }) {
   useEffect(() => {
     getUsers();
   }, [usersRange]);
+
+  useEffect(() => {
+    if (!sessionCtx.isSessionValid()) {
+      navigate("/sessionExpired");
+    }
+  });
 
   const getUsers = () => {
     axios

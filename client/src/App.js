@@ -10,6 +10,7 @@ import SearchFriends from "./pages/SearchFriends";
 import CustomToolbar from "./components/UI/CustomToolbar.js";
 import SignUp from "./pages/SignUp";
 import MineSweeper from "./components/Playground/MineSweeper/MineSweeper";
+import SessionExpired from "./pages/SessionExpired";
 
 import {
   Typography,
@@ -60,7 +61,8 @@ function App() {
         localStorage.setItem("userId", response.data.id);
       })
       .catch((error) => {
-        console.log(error.message);
+        window.location.href !== window.location.origin + "/" &&
+          console.log(error.response.data.message);
       });
   }, [admitted]);
 
@@ -72,7 +74,8 @@ function App() {
         setFilteredPosts([...response.data["filteredPosts"]]);
       })
       .catch((error) => {
-        console.log(error.message);
+        window.location.href !== window.location.origin + "/" &&
+          console.log(error.response.data.message);
       });
   }, []);
 
@@ -88,7 +91,8 @@ function App() {
         setTagsList(tagsList);
       })
       .catch((error) => {
-        console.log(error.message);
+        window.location.href !== window.location.origin + "/" &&
+          console.log(error.response.data.message);
       });
   }, []);
 
@@ -115,7 +119,6 @@ function App() {
   const getRecommendedPostsForMe = async () => {
     try {
       const response = await axios.get(`${baseURL}/posts/recommended`);
-      console.log(...response.data["recommendedPosts"]);
       setRecommendedPosts([...response.data["recommendedPosts"]]);
     } catch (error) {
       console.log(error);
@@ -257,6 +260,10 @@ function App() {
           <Route
             path="/minesweeper"
             element={<MineSweeper baseURL={baseURL} userId={userId} />}
+          />
+          <Route
+            path="/sessionExpired"
+            element={<SessionExpired baseURL={baseURL} userId={userId} />}
           />
         </Routes>
       </Router>

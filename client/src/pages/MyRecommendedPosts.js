@@ -1,5 +1,7 @@
 import { List, Typography } from "@mui/material";
-import { useEffect } from "react";
+import { useEffect, useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import SessionContext from "../session-store/SessionContext";
 import Post from "../components/Posts/Post";
 
 function MyRecommendedPosts({
@@ -11,9 +13,18 @@ function MyRecommendedPosts({
   postDislikes,
   baseURL,
 }) {
+  const navigate = useNavigate();
+  const sessionCtx = useContext(SessionContext);
+
   useEffect(() => {
     getRecommendedPostsForMe();
   }, []);
+
+  useEffect(() => {
+    if (!sessionCtx.isSessionValid()) {
+      navigate("/sessionExpired");
+    }
+  });
 
   return (
     <div className="container">

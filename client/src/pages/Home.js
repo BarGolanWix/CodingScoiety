@@ -3,11 +3,13 @@ import FloatingMenu from "../components/UI/FloatingMenu";
 import Playground from "../components/Playground/Playground";
 import Post from "../components/Posts/Post";
 import { useState, useEffect, useContext } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Panel from "../components/AdminPanel/Panel";
-import AdminContext from "../store/AdminContext";
+import AdminContext from "../components/AdminPanel/store/AdminContext";
+import SessionContext from "../session-store/SessionContext";
 import { v4 } from "uuid";
+import LogTable from "../components/AdminPanel/Logs/LogTable";
 
 function Home({
   Posts,
@@ -22,6 +24,8 @@ function Home({
   admitted,
 }) {
   const ctx = useContext(AdminContext);
+
+  const isLogs = ctx.currLogs.length > 0;
   const [searchParams, setSearchParams] = useSearchParams();
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedPostId, setSelectedPostId] = useState("");
@@ -29,6 +33,14 @@ function Home({
   useEffect(() => {
     ctx.getConfiguration();
   }, []);
+
+  const navigate = useNavigate();
+  const sessionCtx = useContext(SessionContext);
+  useEffect(() => {
+    if (!sessionCtx.isSessionValid()) {
+      navigate("/sessionExpired");
+    }
+  });
 
   ///////////////////////////////////// handle query param /////////////////////////////////////
 
@@ -107,37 +119,45 @@ function Home({
   ///////////////////////////////////// render components /////////////////////////////////////
   return (
     <div className="container">
-      <List sx={{ width: "650px" }}>
-        {Posts.length !== 0 &&
-          Posts.map((post) => {
-            return (
-              <Post
-                key={`home-${post.id}`}
-                postId={post.id}
-                postTitle={post.title}
-                postContent={post.content}
-                postWriter={post.writer}
-                isAddTagBtn={true}
-                isDeleteBtn={false}
-                handleDeletePostClick={handleDeletePostClick}
-                handleAddTagClick={handleAddTagClick}
-                handleTagClick={handleTagClick}
-                selectedTagId={selectedTagId}
-                isTagDisabled={false}
-                Tags={Tags}
-                userId={userId}
-                postLikes={post.likes}
-                postDislikes={post.dislikes}
-                baseURL={baseURL}
-              />
-            );
-          })}
-        {Posts.length === 0 && (
-          <Typography variant="h5" component="div" data-testid="emptyPostList">
-            No Posts Were Found
-          </Typography>
-        )}
-      </List>
+      {isLogs ? (
+        <LogTable />
+      ) : (
+        <List sx={{ width: "45%" }}>
+          {Posts.length !== 0 &&
+            Posts.map((post) => {
+              return (
+                <Post
+                  key={`home-${post.id}`}
+                  postId={post.id}
+                  postTitle={post.title}
+                  postContent={post.content}
+                  postWriter={post.writer}
+                  isAddTagBtn={true}
+                  isDeleteBtn={false}
+                  handleDeletePostClick={handleDeletePostClick}
+                  handleAddTagClick={handleAddTagClick}
+                  handleTagClick={handleTagClick}
+                  selectedTagId={selectedTagId}
+                  isTagDisabled={false}
+                  Tags={Tags}
+                  userId={userId}
+                  postLikes={post.likes}
+                  postDislikes={post.dislikes}
+                  baseURL={baseURL}
+                />
+              );
+            })}
+          {Posts.length === 0 && (
+            <Typography
+              variant="h5"
+              component="div"
+              data-testid="emptyPostList"
+            >
+              No Posts Were Found
+            </Typography>
+          )}
+        </List>
+      )}
       {admitted.includes("admin") ? (
         <Panel
           tagsList={tagsList}

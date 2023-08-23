@@ -59,7 +59,8 @@ function AdminContextProvider(props) {
       const newConfiguration = response.data.Configuration;
       setFunctionalities(newConfiguration);
     } catch (error) {
-      console.log(error);
+      window.location.href !== window.location.origin + "/" &&
+        console.log(error.response.data.message);
     }
   };
 
@@ -112,10 +113,11 @@ function AdminContextProvider(props) {
       const response = await axios.get(`${baseURL}/logs/get`, {
         params: { logsOptions },
       });
-      const newLogs = response.data.Logs;
+      const newLogs = response.data.requestedLogs;
       setCurrLogs(newLogs);
     } catch (error) {
-      console.log(error);
+      window.location.href !== window.location.origin + "/" &&
+        console.log(error.response.data.message);
     }
   };
 
@@ -126,6 +128,7 @@ function AdminContextProvider(props) {
         handleDisableClick,
         getConfiguration,
         currLogs,
+        setCurrLogs,
         logsOptions,
         handleLogsClick,
       }}

@@ -1,6 +1,6 @@
 import React from "react";
 import { useContext } from "react";
-import AdminContext from "../../store/AdminContext";
+import AdminContext from "../store/AdminContext";
 import FunctionalityItem from "./FunctionalityItem";
 import { Divider, Typography } from "@mui/material";
 

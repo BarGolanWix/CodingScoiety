@@ -11,13 +11,19 @@ import {
   Checkbox,
   Input,
 } from "@mui/material";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import SessionContext from "../session-store/SessionContext";
 
 function SignUp({ setAdmitted, baseURL }) {
   const navigate = useNavigate();
-  const [account, setAccount] = useState({ userName: "", password: "" });
+  const sessionCtx = useContext(SessionContext);
+  const [account, setAccount] = useState({
+    userName: "",
+    password: "",
+    confirmPassword: "",
+  });
   const fileInputRef = useRef(null);
 
   useEffect(() => {
@@ -50,6 +56,11 @@ function SignUp({ setAdmitted, baseURL }) {
       );
       setAdmitted("authorizedUser");
       localStorage.setItem("admitted", "authorizedUser");
+
+      const accessTokenExpiration = response.data.accessTokenExpiration;
+      sessionCtx.setAccessTokenFromCookie();
+      localStorage.setItem("accessTokenExpiration", accessTokenExpiration);
+
       navigate("/home");
     } catch (error) {
       if (error.response.data.message) {

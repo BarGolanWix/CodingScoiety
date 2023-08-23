@@ -70,6 +70,7 @@ app.post("/signUp", cors(corsOptions), (req, res) => {
       profileImage: filePath,
       posts: [],
       following: [],
+      highScore: 0,
     };
     const newCredentials = {
       userName: userName,
@@ -97,7 +98,12 @@ app.post("/signUp", cors(corsOptions), (req, res) => {
 
     res.cookie("userId", newUser.userId);
     res.cookie("accessToken", newAccessToken);
-    res.send({ success: true, authorization: newUser.authorization });
+    let accessTokenExpiration = newAccessToken.expirationDate;
+    res.send({
+      success: true,
+      authorization: newUser.authorization,
+      accessTokenExpiration,
+    });
   });
 });
 
@@ -111,7 +117,12 @@ app.post("/credentialsCheck", cors(corsOptions), (req, res) => {
     user.accessToken = newAccessToken;
     res.cookie("userId", user.userId);
     res.cookie("accessToken", newAccessToken);
-    res.send({ success: true, authorization: user.authorization });
+    res.send({
+      success: true,
+      authorization: user.authorization,
+      accessTokenExpiration: newAccessToken.expirationDate,
+    });
+    Logs["login"].push(generateNewLog(user.userId, "login", new Date(), v4()));
   } else {
     res.status(400).send({
       success: false,
@@ -121,6 +132,7 @@ app.post("/credentialsCheck", cors(corsOptions), (req, res) => {
 });
 
 app.use((req, res, next) => {
+  console.log(req);
   let currentAccessToken = req.cookies?.accessToken;
   const currentUserId = req.cookies?.userId;
   const userInDisc = Credentials.find((user) => user.userId === currentUserId);
@@ -157,6 +169,7 @@ app.put("/logout", cors(corsOptions), (req, res) => {
   const currentUser = Credentials.find((user) => userId === user.userId);
   currentUser.accessToken.expirationDate = new Date();
   res.status(200).send({ succes: true, credentials: Credentials });
+  Logs["signOut"].push(generateNewLog(userId, "signOut", new Date(), v4()));
 });
 
 ///////////////////////////////////// posts /////////////////////////////////////
@@ -203,6 +216,9 @@ app.post("/posts", cors(corsOptions), (req, res) => {
   }
 
   res.status(200).send({ success: true });
+  Logs["addNewPost"].push(
+    generateNewLog(userId, "addNewPost", new Date(), v4())
+  );
 });
 
 app.put("/deletePost", cors(corsOptions), (req, res) => {
@@ -409,7 +425,6 @@ app.put("/mineSweeper/storeHighscore", (req, res) => {
   const userId = req.cookies?.userId;
   const { score } = req.body;
   const userToUpdate = Users.find((user) => user.userId === userId);
-  console.log("recived");
 
   if (Number(userToUpdate.highScore) < score) {
     userToUpdate.highScore = score;
@@ -461,8 +476,11 @@ app.get("/logs/get", (req, res) => {
     (option) => option.checked == "true"
   );
   const checkedOperations = checkedOptions.map((option) => option.id);
-  console.log(checkedOperations);
-  res.status(200).send({ Logs });
+  let requestedLogs = [];
+  for (const logs of checkedOperations) {
+    requestedLogs = [...requestedLogs, ...Logs[logs]];
+  }
+  res.status(200).send({ requestedLogs });
 });
 
 ///////////////////////////////////// write to disc /////////////////////////////////////
@@ -502,6 +520,10 @@ setInterval(() => {
       Configuration
     )}; module.exports = { Configuration }`
   );
+  writeDataToFile(
+    "./Persist/Logs.js",
+    `const Logs = ${JSON.stringify(Logs)}; module.exports = { Logs }`
+  );
 }, 30000);
 
 ///////////////////////////////////// helper functions /////////////////////////////////////
@@ -515,7 +537,8 @@ function generateAccessToken(rememberMe) {
   if (rememberMe) {
     expirationDate.setHours(expirationDate.getHours() + 240);
   } else {
-    expirationDate.setMinutes(expirationDate.getMinutes() + 30);
+    // expirationDate.setMinutes(expirationDate.getMinutes() + 30);
+    expirationDate.setMinutes(expirationDate.getMinutes() + 1);
   }
 
   const accessToken = uuidv4();
@@ -569,4 +592,8 @@ const checkPasswordValidity = (password) => {
   }
 
   return { isValid: isValid, message: errorMessage };
+};
+
+const generateNewLog = (userId, operation, time, id) => {
+  return { userId, operation, time, id };
 };

@@ -1,7 +1,7 @@
 import TagsCloud from "../Tags/TagsCloud";
 import { Container, Divider, Typography } from "@mui/material";
-import FunctiolitiesList from "./FunctiolitiesList";
-import LogsList from "./LogsList";
+import FunctiolitiesList from "./Functionalities/FunctiolitiesList";
+import LogsList from "./Logs/LogsList";
 
 function Panel({ tagsList, handleAddNewTag, selectedTagId, handleTagClick }) {
   return (

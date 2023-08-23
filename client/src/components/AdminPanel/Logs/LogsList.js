@@ -1,6 +1,6 @@
 import React from "react";
 import { useState, useContext } from "react";
-import AdminContext from "../../store/AdminContext";
+import AdminContext from "../store/AdminContext";
 import {
   RadioGroup,
   FormControlLabel,

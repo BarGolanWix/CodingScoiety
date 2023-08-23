@@ -11,16 +11,23 @@ import {
   Button,
   Select,
 } from "@mui/material";
-import { useState } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
+import SessionContext from "../session-store/SessionContext";
 
 function AddNewPost({ handleAddPost, tagsList }) {
-  const navigate = useNavigate();
-
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [selectedTag, setSelectedTag] = useState("");
+
+  const navigate = useNavigate();
+  const sessionCtx = useContext(SessionContext);
+  useEffect(() => {
+    if (!sessionCtx.isSessionValid()) {
+      navigate("/sessionExpired");
+    }
+  });
 
   const handleSubmit = () => {
     if (title === "" || content === "") {

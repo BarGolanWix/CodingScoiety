@@ -16,6 +16,12 @@
   .container {
     flex-direction: column;
   }
+  ul.css-1iezpb3-MuiList-root {
+    width: 100%;
+  }
+  div.css-i7dpuj-MuiContainer-root {
+    width: 100%;
+  }
 }
 
 .usersContainer {
@@ -249,4 +255,21 @@ tr.leaderboard-tableRow-currUser td {
 .logsList {
   display: flex;
   flex-direction: column;
+}
+
+.session-expired-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  text-align: center;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.session-expired-container.show {
+  opacity: 1;
+  transform: translateY(0);
 }

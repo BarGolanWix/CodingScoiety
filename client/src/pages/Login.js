@@ -9,14 +9,15 @@ import {
   FormControlLabel,
   Checkbox,
 } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
+import SessionContext from "../session-store/SessionContext";
 
 function Login({ setAdmitted }) {
   const baseURL = localStorage.getItem("baseURL");
   const navigate = useNavigate();
+  const sessionCtx = useContext(SessionContext);
   const [account, setAccount] = useState({ userName: "", password: "" });
   const [rememberMe, setRememberMe] = useState(false);
 
@@ -29,15 +30,16 @@ function Login({ setAdmitted }) {
       const response = await axios.get(`${baseURL}/autoCredentialsCheck`);
       const authorization = response.data.authorization;
       if (authorization === "admin" || authorization === "authorizedUser") {
-        setAdmitted(authorization);
-        localStorage.setItem("admitted", authorization);
+        // setAdmitted(authorization);
+        // localStorage.setItem("admitted", authorization);
         navigate("/home");
       } else {
         setAdmitted("");
         localStorage.setItem("admitted", "");
       }
     } catch (error) {
-      console.log(error);
+      window.location.href !== window.location.origin + "/" &&
+        console.log(error.response.data.message);
     }
   };
 
@@ -66,6 +68,11 @@ function Login({ setAdmitted }) {
         let authorization = response.data.authorization + `-${new Date()}`;
         setAdmitted(authorization);
         localStorage.setItem("admitted", authorization);
+
+        let accessTokenExpiration = response.data.accessTokenExpiration;
+        sessionCtx.setAccessTokenFromCookie();
+        localStorage.setItem("accessTokenExpiration", accessTokenExpiration);
+
         navigate("/home");
       }
     } catch (error) {

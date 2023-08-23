@@ -11,6 +11,7 @@ const AdminContext = React.createContext({
   handleDisableClick: null,
   getConfiguration: null,
   currLogs: null,
+  setCurrLogs: null,
   handleLogsClick: null,
   logsOptions: [],
 });

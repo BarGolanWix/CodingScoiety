@@ -16,7 +16,8 @@ import HomeIcon from "@mui/icons-material/Home";
 import SearchIcon from "@mui/icons-material/Search";
 import { useContext } from "react";
 import axios from "axios";
-import AdminContext from "../../store/AdminContext";
+import AdminContext from "../AdminPanel/store/AdminContext";
+import SessionContext from "../../session-store/SessionContext";
 
 function CustomToolbar({
   admitted,
@@ -28,6 +29,8 @@ function CustomToolbar({
   baseURL,
 }) {
   const ctx = useContext(AdminContext);
+  const sessionCtx = useContext(SessionContext);
+  const isSessionValid = sessionCtx.isSessionValid();
 
   const handleSignOutClick = async () => {
     try {
@@ -40,7 +43,7 @@ function CustomToolbar({
   return (
     <AppBar position="sticky" color="inherit">
       <Toolbar>
-        {admitted ? (
+        {isSessionValid ? (
           <ButtonGroup variant="text" aria-label="text button group">
             <Button
               onClick={handleHomeClick}
@@ -98,7 +101,7 @@ function CustomToolbar({
         </Typography>
         <Button
           className={
-            !window.location.href.startsWith("http://localhost:3000/home")
+            !window.location.href.startsWith(`${window.location.origin}/home`)
               ? "visibilityHidden"
               : ""
           }
@@ -112,24 +115,26 @@ function CustomToolbar({
         >
           Filter by Popularity
         </Button>
-        <Button
-          className={
-            window.location.href !== "http://localhost:3000/" &&
-            window.location.href !== "http://localhost:3000/signUp"
-              ? ""
-              : "visibilityHidden"
-          }
-          size="large"
-          color="inherit"
-          sx={{
-            letterSpacing: 1,
-          }}
-          href="/"
-          onClick={handleSignOutClick}
-          data-testid="signOutBtn"
-        >
-          Sign Out
-        </Button>
+        {isSessionValid && (
+          <Button
+            className={
+              window.location.href !== `${window.location.origin}/` &&
+              window.location.href !== `${window.location.origin}/signUp`
+                ? ""
+                : "visibilityHidden"
+            }
+            size="large"
+            color="inherit"
+            sx={{
+              letterSpacing: 1,
+            }}
+            href="/"
+            onClick={handleSignOutClick}
+            data-testid="signOutBtn"
+          >
+            Sign Out
+          </Button>
+        )}
         <FloatingMenu
           menuOptions={popularityOptions}
           anchorElement={anchorEl}

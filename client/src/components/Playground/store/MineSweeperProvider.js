@@ -20,7 +20,7 @@ function MineSweeperProvider(props) {
       const leaderBoardFromServer = response.data;
       setLeaderBoardData(leaderBoardFromServer);
     } catch (error) {
-      console.log(error);
+      console.log(error.response.data.message);
     }
   };
 
@@ -31,9 +31,8 @@ function MineSweeperProvider(props) {
         `${baseURL}/mineSweeper/storeHighscore`,
         timerToSend
       );
-      console.log(response);
     } catch (error) {
-      console.log(error);
+      console.log(error.response.data.message);
     }
   };
 
