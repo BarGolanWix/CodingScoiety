@@ -19,6 +19,7 @@
   - [The Feed](#the-feed)
   - [Authorization / Authentication](#authorization--authentication)
   - [Running the Program](#running-the-program)
+  - [Testing the Program](#testing-the-program)
   - [Submission](#submission)
 
 ## App Structure
@@ -94,6 +95,22 @@ npm start
 
 This command will automatically start both the client and server servers. Please note that the program is configured to run on port 3000 for the client and port 3080 for the server. Make sure that these ports are available and not in use by other applications.
 
+## Testing the Program
+
+The program offers server routes testing. To do so follow the following steps:
+
+1. Download the necessary npm modules by executing the following command in your terminal:
+
+```sh
+npm install
+```
+
+2. Once the download is complete, initiate the testing script by running the following command:
+
+```sh
+npm test
+```
+
 ## Submission
 
 **Additional Pages**
@@ -107,7 +124,7 @@ This command will automatically start both the client and server servers. Please
 2. [Search Friends](#search-friends) - Fetching in blocks and scrolling between them using next / prev buttons.
 3. Filter posts according to tags.
 
-**Hard to do**
+**Challenges**
 
 1. Autorization and authentication mechanism.
 2. Data synchronization with all users.
@@ -123,11 +140,11 @@ This command will automatically start both the client and server servers. Please
 - **GET "/getUserId"**: Get user ID.
 - **PUT "/logout"**: Log out.
 
-1. Post Routes:
+2. Post Routes:
 
 - **GET "/posts"**: Get filtered posts (popularity and friends).
 - **POST "/posts"**: Add a new post.
-- **PUT "/deletePost"**: Delete a post.
+- **DELETE "/deletePost"**: Delete a post.
 - **POST "/posts/tags"**: Add a tag to a post.
 - **POST "/posts/likesDislikes"**: Like/dislike a post.
 - **GET "/posts/recommended"**: Get recommended posts.
@@ -142,6 +159,7 @@ This command will automatically start both the client and server servers. Please
 - **GET "/users"**: Get users list.
 - **GET "/users/searchFriends/:keyword"**: Search for friends.
 - **PUT "/users/follow"**: Follow/unfollow a user.
+- **DELETE "/deleteUser"**: Delete a user.
 
 5. Minesweeper Routes:
 

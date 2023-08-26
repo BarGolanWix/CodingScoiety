@@ -35,6 +35,10 @@
   width: 100%;
 }
 
+li.post {
+  padding-left: 0;
+}
+
 .userCard {
   width: 100%;
   display: flex;

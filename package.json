@@ -5,8 +5,7 @@
   "description": "",
   "scripts": {
     "start": "lerna run start --stream",
-    "test": "npx playwright test",
-    "test:example": "npx playwright test tests/exampleTests"
+    "test": "lerna run --scope server start-server-and-test"
   },
   "repository": {
     "type": "git"
@@ -22,6 +21,7 @@
   },
   "devDependencies": {
     "@playwright/test": "^1.32.3",
+    "concurrently": "^8.2.1",
     "lerna": "^6.6.2",
     "playwright": "^1.32.3"
   },

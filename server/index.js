@@ -30,7 +30,7 @@ app.use(cors(corsOptions));
 ///////////////////////////////////// user authorization /////////////////////////////////////
 
 app.get("/", cors(corsOptions), (req, res) => {
-  res.send("Welcome!");
+  res.status(200).send("Welcome!");
 });
 
 app.post("/signUp", cors(corsOptions), (req, res) => {
@@ -101,7 +101,7 @@ app.post("/signUp", cors(corsOptions), (req, res) => {
     let accessTokenExpiration = newAccessToken.expirationDate;
     res.send({
       success: true,
-      authorization: newUser.authorization,
+      authorization: newCredentials.authorization,
       accessTokenExpiration,
     });
   });
@@ -171,6 +171,10 @@ app.put("/logout", cors(corsOptions), (req, res) => {
   Logs["signOut"].push(generateNewLog(userId, "signOut", new Date(), v4()));
 });
 
+app.get("/test", cors(corsOptions), (req, res) => {
+  res.status(200).send({ succes: true, credentials: Credentials });
+});
+
 ///////////////////////////////////// posts /////////////////////////////////////
 
 app.get("/posts", cors(corsOptions), (req, res) => {
@@ -220,8 +224,8 @@ app.post("/posts", cors(corsOptions), (req, res) => {
   );
 });
 
-app.put("/deletePost", cors(corsOptions), (req, res) => {
-  const { postId } = req.body;
+app.delete("/deletePost", cors(corsOptions), (req, res) => {
+  const { postId } = req.query;
   const postToDelete = Posts.find((post) => postId === post.id);
   const index = Posts.indexOf(postToDelete);
   if (index !== -1) {
@@ -414,8 +418,28 @@ app.put("/users/follow", cors(corsOptions), (req, res) => {
   }
 });
 
+app.delete("/deleteUser", (req, res) => {
+  const { userId } = req.query;
+  const userToDelete = Users.find((user) => userId === user.userId);
+  const credToDelete = Credentials.find((user) => userId === user.userId);
+  if (userToDelete && credToDelete) {
+    const userIndex = Users.indexOf(userToDelete);
+    const credIndex = Credentials.indexOf(credToDelete);
+    Users.splice(userIndex, 1);
+    Credentials.splice(credIndex, 1);
+    res
+      .status(200)
+      .send({ status: true, message: `User ${userId} deleted from database` });
+  } else {
+    res.status(403).send({
+      success: false,
+      message: `Coudln't find user with ID ${userId}`,
+    });
+  }
+});
+
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
+  console.log(`App listening on port ${port}`);
 });
 
 ///////////////////////////////////// minesweeper /////////////////////////////////////

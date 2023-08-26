@@ -10,6 +10,7 @@ import AdminContext from "../components/AdminPanel/store/AdminContext";
 import SessionContext from "../session-store/SessionContext";
 import { v4 } from "uuid";
 import LogTable from "../components/AdminPanel/Logs/LogTable";
+import TagsCloud from "../components/Tags/TagsCloud";
 
 function Home({
   Posts,
@@ -26,6 +27,7 @@ function Home({
   const ctx = useContext(AdminContext);
 
   const isLogs = ctx.currLogs.length > 0;
+  const isAdmin = admitted.includes("admin");
   const [searchParams, setSearchParams] = useSearchParams();
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedPostId, setSelectedPostId] = useState("");
@@ -95,10 +97,12 @@ function Home({
 
   const handleDeletePostClick = async (postId) => {
     try {
-      const response = await axios.put(
+      const response = await axios.delete(
         `${baseURL}/deletePost`,
         {
-          postId,
+          params: {
+            postId,
+          },
         },
         {
           headers: {
@@ -123,6 +127,14 @@ function Home({
         <LogTable />
       ) : (
         <List sx={{ width: "45%" }}>
+          {!isAdmin && (
+            <TagsCloud
+              tagsList={tagsList}
+              handleAddNewTag={handleAddNewTag}
+              selectedTagId={selectedTagId}
+              handleTagClick={handleTagClick}
+            />
+          )}
           {Posts.length !== 0 &&
             Posts.map((post) => {
               return (
@@ -152,6 +164,7 @@ function Home({
               variant="h5"
               component="div"
               data-testid="emptyPostList"
+              sx={{ marginTop: "3%" }}
             >
               No Posts Were Found
             </Typography>

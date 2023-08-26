@@ -110,6 +110,7 @@ function App() {
       .get(`${baseURL}/posts?${popUrl}&${tagUrl}`)
       .then((response) => {
         setFilteredPosts([...response.data["filteredPosts"]]);
+        console.log([...response.data["filteredPosts"]]);
       })
       .catch((error) => {
         console.log(error.message);
@@ -192,9 +193,15 @@ function App() {
   };
 
   const filterPostsByTag = (tagName, tagId) => {
-    setSelectedTagQuery(tagName);
-    setSelectedTagId(tagId);
-    getFilteredPosts(selectedPopularityQuery, tagName);
+    if (tagName === selectedTagQuery) {
+      setSelectedTagQuery("");
+      setSelectedTagId("tagId");
+      getFilteredPosts(selectedPopularityQuery, "");
+    } else {
+      setSelectedTagQuery(tagName);
+      setSelectedTagId(tagId);
+      getFilteredPosts(selectedPopularityQuery, tagName);
+    }
   };
 
   ///////////////////////////////////// render components /////////////////////////////////////

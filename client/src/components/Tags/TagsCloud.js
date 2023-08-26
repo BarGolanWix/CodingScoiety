@@ -23,6 +23,7 @@ function TagsCloud({
 }) {
   const [isNewTag, setIsNewTag] = useState(false);
   const [newTag, setNewTag] = useState("");
+  const isAdmin = localStorage.getItem("admitted").includes("admin");
 
   const handleNewTagClick = () => {
     setIsNewTag(true);
@@ -36,15 +37,21 @@ function TagsCloud({
 
   return (
     <>
-      <Typography
-        variant="h6"
-        sx={{ fontWeight: "bold", marginTop: "10%" }}
-        color="secondary"
-        data-testid="tagList-title"
-      >
-        Tags List
-      </Typography>
-      <Divider sx={{ padding: "3px" }} />
+      {isAdmin ? (
+        <>
+          <Typography
+            variant="h6"
+            sx={{ fontWeight: "bold", marginTop: "10%" }}
+            color="secondary"
+            data-testid="tagList-title"
+          >
+            Tags List
+          </Typography>
+          <Divider sx={{ padding: "3px" }} />
+        </>
+      ) : (
+        ""
+      )}
       <Box className="tagsList">
         {tagsList.map((tagName, index) => (
           <Tag
@@ -56,10 +63,12 @@ function TagsCloud({
             isDisabled={false}
           />
         ))}
-        <AddTagButton
-          dataTestId={`tagList-AddTagBtn`}
-          onClick={handleNewTagClick}
-        />
+        {isAdmin && (
+          <AddTagButton
+            dataTestId={`tagList-AddTagBtn`}
+            onClick={handleNewTagClick}
+          />
+        )}
         {isNewTag && (
           <Card
             component="form"

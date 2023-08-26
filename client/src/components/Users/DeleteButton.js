@@ -2,7 +2,7 @@ import React from "react";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import { Fab, Tooltip } from "@mui/material";
 
-function DeleteButton({ onDelteClick, userId }) {
+function DeleteButton({ onDeleteClick, userId }) {
   return (
     <Fab
       variant="extended"
@@ -10,7 +10,7 @@ function DeleteButton({ onDelteClick, userId }) {
       fontSize="medium"
       sx={{ float: "right", padding: "5px" }}
       disableRipple
-      onClick={() => onDelteClick(userId)}
+      onClick={() => onDeleteClick(userId)}
     >
       <Tooltip title="delete post" arrow placement="top">
         <DeleteOutlineIcon color="action" />

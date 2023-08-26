@@ -17,7 +17,7 @@ function UserCard({
   userImage,
   onFollowClick,
   isFollowed,
-  onDelteClick,
+  onDeleteClick,
 }) {
   const admitted = localStorage.getItem("admitted");
   const [follow, setFollow] = useState(isFollowed);
@@ -39,7 +39,7 @@ function UserCard({
       >
         <Card>
           {admitted.includes("admin") && (
-            <DeleteButton onDelteClick={onDelteClick} userId={userId} />
+            <DeleteButton onDeleteClick={onDeleteClick} userId={userId} />
           )}
           <ListItemButton disableGutters sx={{ margin: "4px" }}>
             <CardContent className="userCard">

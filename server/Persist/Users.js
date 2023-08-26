@@ -1,5 +1,13 @@
 const Users = [
   {
+    userId: "1",
+    userName: "Test",
+    profileImage: "/images/default-profile-image.png",
+    posts: [],
+    following: [],
+    highScore: "0",
+  },
+  {
     userId: "11",
     userName: "Jhon",
     profileImage: "/images/Jhon.jpg",

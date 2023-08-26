@@ -96,8 +96,25 @@ function SearchFriends({ baseURL }) {
     setUsersRange({ base: newBase, limit: newLimit });
   };
 
-  const deleteUserHandler = () => {
-    console.log("function delete user");
+  const deleteUserHandler = async (userId) => {
+    try {
+      const response = await axios.delete(
+        `${baseURL}/deleteUser`,
+        {
+          params: {
+            userId,
+          },
+        },
+        {
+          headers: {
+            "content-type": "application/x-www-form-urlencoded",
+          },
+        }
+      );
+      getUsers();
+    } catch (error) {
+      console.log(error.message);
+    }
   };
 
   return (
@@ -165,7 +182,7 @@ function SearchFriends({ baseURL }) {
                 isFollowed={
                   followedUsers.includes(user.userName) ? true : false
                 }
-                onDelteClick={deleteUserHandler}
+                onDeleteClick={deleteUserHandler}
               />
             );
           })}
