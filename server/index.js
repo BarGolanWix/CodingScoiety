@@ -364,8 +364,6 @@ app.post("/tags/tagName/:tagName", cors(corsOptions), (req, res) => {
 
 ///////////////////////////////////// users and followers /////////////////////////////////////
 
-// let lastCall = new Date();
-
 app.get("/users", cors(corsOptions), (req, res) => {
   const userId = req.cookies?.userId;
   const usersRange = req.query.usersRange;
@@ -374,15 +372,6 @@ app.get("/users", cors(corsOptions), (req, res) => {
 
   let usersWithoutCurrentUser = Users.filter((user) => user.userId !== userId);
   usersWithoutCurrentUser = usersWithoutCurrentUser.slice(base, limit);
-
-  // patch on the double calls
-  // const timeDiff = new Date().getTime() - lastCall.getTime();
-  // console.log(timeDiff);
-  // if (timeDiff < 500) {
-  //   usersWithoutCurrentUser = [];
-  // } else {
-  //   lastCall = new Date();
-  // }
 
   const followedUsers = findUserWithCookie(userId).following;
   res.status(200).send({ usersWithoutCurrentUser, followedUsers });
@@ -509,13 +498,13 @@ app.get("/logs/get", (req, res) => {
 ///////////////////////////////////// write to disc /////////////////////////////////////
 
 function writeDataToFile(filename, data) {
-  // fs.writeFile(filename, data, (err) => {
-  //   if (err) {
-  //     console.error(`Error writing to ${filename}:`, err);
-  //   } else {
-  //     console.log(`Data written to ${filename}`);
-  //   }
-  // });
+  fs.writeFile(filename, data, (err) => {
+    if (err) {
+      console.error(`Error writing to ${filename}:`, err);
+    } else {
+      console.log(`Data written to ${filename}`);
+    }
+  });
 }
 
 setInterval(() => {

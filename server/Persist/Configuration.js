@@ -1,9 +1,5 @@
 const Configuration = {
-  addNewPost: {
-    checked: false,
-    text: "Add New Post",
-    id: "addNewPost",
-  },
+  addNewPost: { checked: false, text: "Add New Post", id: "addNewPost" },
   exploreMorePosts: {
     checked: false,
     text: "Explore More Posts",
@@ -19,11 +15,6 @@ const Configuration = {
     text: "Popularity Filter",
     id: "popularityFilter",
   },
-  playground: {
-    checked: false,
-    text: "Playground",
-    id: "playground",
-  },
+  playground: { checked: false, text: "Playground", id: "playground" },
 };
-
 module.exports = { Configuration };

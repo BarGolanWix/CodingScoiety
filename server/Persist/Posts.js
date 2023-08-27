@@ -14,7 +14,7 @@ const Posts = [
     title: "Example Title 2",
     content: "Example content 2",
     userId: "11",
-    likes: ["1", "2"],
+    likes: ["1", "2", "22feb387-2fe5-43d1-ad05-06daf387764f"],
     dislikes: [],
   },
   {
@@ -160,7 +160,7 @@ const Posts = [
     content: "Content 15",
     userId: "111",
     likes: ["12", "23"],
-    dislikes: ["13"],
+    dislikes: ["13", "22feb387-2fe5-43d1-ad05-06daf387764f"],
   },
   {
     id: "36",
@@ -168,7 +168,7 @@ const Posts = [
     title: "Title 16",
     content: "Content 16",
     userId: "12",
-    likes: ["11"],
+    likes: ["11", "22feb387-2fe5-43d1-ad05-06daf387764f"],
     dislikes: [],
   },
   {
@@ -205,6 +205,15 @@ const Posts = [
     content: "Content 20",
     userId: "22",
     likes: ["31", "33"],
+    dislikes: [],
+  },
+  {
+    id: "aa4659ba-a84b-4f96-aada-036139c52942",
+    writer: ["ed832cad-3fdd-479e-8e82-35f02d78ef0a", "Jonathan"],
+    title: "React review",
+    content: "I lova react! : )",
+    userId: "ed832cad-3fdd-479e-8e82-35f02d78ef0a",
+    likes: [],
     dislikes: [],
   },
 ];

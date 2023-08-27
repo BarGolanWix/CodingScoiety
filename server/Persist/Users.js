@@ -207,5 +207,13 @@ const Users = [
     following: [],
     highScore: "0",
   },
+  {
+    userId: "22feb387-2fe5-43d1-ad05-06daf387764f",
+    userName: "Bar",
+    profileImage: "/images/default-profile-image.png",
+    posts: [],
+    following: ["JhonTravolta", "Lisa", "JonathanTheKing", "Alice"],
+    highScore: 0,
+  },
 ];
 module.exports = { Users };

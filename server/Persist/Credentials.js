@@ -44,8 +44,8 @@ const Credentials = [
     userId: "ed832cad-3fdd-479e-8e82-35f02d78ef0a",
     authorization: "admin",
     accessToken: {
-      secret: "a121ff4e-4ab6-4e39-8e7a-2f4f5b322741",
-      expirationDate: "2023-09-21T06:20:48.310Z",
+      secret: "dc982031-908e-48b0-96aa-aa7e2b7cda77",
+      expirationDate: "2023-08-27T17:34:21.079Z",
     },
   },
   {
@@ -187,6 +187,16 @@ const Credentials = [
     userId: "40",
     authorization: "authorizedUser",
     accessToken: { secret: "", expirationDate: "" },
+  },
+  {
+    userName: "Bar",
+    password: "Bb123456",
+    userId: "22feb387-2fe5-43d1-ad05-06daf387764f",
+    authorization: "authorizedUser",
+    accessToken: {
+      secret: "e5d8f3af-124a-49ed-9a52-29a73b677b23",
+      expirationDate: "2023-08-27T17:04:14.104Z",
+    },
   },
 ];
 module.exports = { Credentials };
