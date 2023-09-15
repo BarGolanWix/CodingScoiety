@@ -1,3 +1,5 @@
+const { v4: uuidv4 } = require("uuid");
+
 let cookieDate =
   "userId=1; accessToken=j%3A%7B%22secret%22%3A%22977685c5-de4c-497e-974b-61dcd7664dfe%22%2C%22expirationDate%22%3A%222030-08-23T21%3A41%3A00.503Z%22%7D";
 
@@ -8,14 +10,20 @@ const headers = {
 
 const tests = {
   autorization: [
-    { name: "Root", method: "GET", route: "/", data: {}, expected: "Welcome!" },
+    {
+      name: "Root",
+      method: "GET",
+      route: "/",
+      data: { isTest: true },
+      expected: "Welcome!",
+    },
     {
       name: "Sign Up",
       method: "POST",
       route: "/signUp",
       data: {
         account: {
-          userName: "Bar",
+          userName: uuidv4(),
           password: "Aa123456",
           profileImage: "/images/default-profile-image.png",
         },
@@ -28,7 +36,7 @@ const tests = {
       data: {
         account: {
           userName: "Bar",
-          password: "Aa123456",
+          password: "Bb123456",
           rememberMe: false,
         },
       },

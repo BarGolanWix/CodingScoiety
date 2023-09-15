@@ -19,6 +19,24 @@ import axios from "axios";
 import AdminContext from "../AdminPanel/store/AdminContext";
 import SessionContext from "../../session-store/SessionContext";
 
+const generateTitle = () => {
+  if (
+    window.location.href === `${window.location.origin}/my-recommended-posts`
+  ) {
+    return "Recommended For You";
+  } else if (
+    window.location.href === `${window.location.origin}/search-friends`
+  ) {
+    return "Search Friends";
+  } else if (
+    window.location.href === `${window.location.origin}/add-new-post`
+  ) {
+    return "Add A New Post";
+  } else {
+    return "Coding Society";
+  }
+};
+
 function CustomToolbar({
   admitted,
   handleHomeClick,
@@ -31,10 +49,12 @@ function CustomToolbar({
   const ctx = useContext(AdminContext);
   const sessionCtx = useContext(SessionContext);
   const isSessionValid = sessionCtx.isSessionValid();
+  console.log(isSessionValid);
 
   const handleSignOutClick = async () => {
     try {
       const response = await axios.put(`${baseURL}/logout`);
+      localStorage.setItem("accessTokenExpiration", new Date());
     } catch (error) {
       console.log(error);
     }
@@ -97,7 +117,7 @@ function CustomToolbar({
           component="div"
           sx={{ fontFamily: "monospace", flexGrow: 1 }}
         >
-          Coding Society
+          {generateTitle()}
         </Typography>
         <Button
           className={
