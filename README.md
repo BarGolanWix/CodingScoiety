@@ -171,3 +171,5 @@ npm test
 - **PUT "/configuration/store"**: Store configuration settings.
 - **GET "/configuration/get"**: Get configuration settings.
 - **GET "/logs/get"**: Get logs.
+
+- TBD : chat on home screen
